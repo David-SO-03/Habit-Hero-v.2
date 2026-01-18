@@ -540,8 +540,8 @@ function HabitHeroWeekly() {
       triggerEpicCelebration();
     }
     
-    updateConfig({ groups: updatedGroups });
-  }, [config.groups, config.weekStart, epicAnimationTriggered, triggerEpicCelebration]);
+    updateConfig(updates);
+  }, [config, epicAnimationTriggered, triggerEpicCelebration, updateConfig]);
 
   const calculateGroupProgress = (group) => {
     const completedWeight = group.tasks
@@ -1154,6 +1154,42 @@ function HabitHeroWeekly() {
       setShowResetModal(true);
     };
 
+    const addShopItem = () => {
+      const newId = Math.max(0, ...tempConfig.shopItems.map(item => item.id)) + 1;
+      const newItem = {
+        id: newId,
+        name: "Nuevo item",
+        description: "Descripción del item",
+        price: 10,
+        type: "custom",
+        icon: "⭐"
+      };
+      setTempConfig({
+        ...tempConfig,
+        shopItems: [...tempConfig.shopItems, newItem]
+      });
+    };
+
+    const updateShopItem = (itemId, field, value) => {
+      setTempConfig({
+        ...tempConfig,
+        shopItems: tempConfig.shopItems.map(item =>
+          item.id === itemId ? { ...item, [field]: field === 'price' ? Number(value) : value } : item
+        )
+      });
+    };
+
+    const deleteShopItem = (itemId) => {
+      if (tempConfig.shopItems.length <= 1) {
+        alert('Debe haber al menos un item en la tienda');
+        return;
+      }
+      setTempConfig({
+        ...tempConfig,
+        shopItems: tempConfig.shopItems.filter(item => item.id !== itemId)
+      });
+    };
+    
     return (
       <div className="config-panel">
         <div className="config-header">
@@ -1219,6 +1255,79 @@ function HabitHeroWeekly() {
               </section>
             );
           })}
+
+          {/* Sección de Items de la Tienda */}
+          <section className="config-section shop-config-section">
+            <h3 className="config-section-title">🛒 Items de la Tienda</h3>
+            
+            {tempConfig.shopItems.map((item, index) => (
+              <div key={item.id} className="shop-item-config">
+                <div className="shop-item-header">
+                  <span className="shop-item-number">{index + 1}</span>
+                  <input
+                    type="text"
+                    className="config-input-icon"
+                    value={item.icon}
+                    onChange={(e) => updateShopItem(item.id, 'icon', e.target.value)}
+                    placeholder="Icono"
+                    maxLength="2"
+                  />
+                  <button 
+                    className="btn-delete-item"
+                    onClick={() => deleteShopItem(item.id)}
+                    title="Eliminar item"
+                  >
+                    🗑️
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  className="config-input-name"
+                  value={item.name}
+                  onChange={(e) => updateShopItem(item.id, 'name', e.target.value)}
+                  placeholder="Nombre del item"
+                />
+
+                <textarea
+                  className="config-input-description"
+                  value={item.description}
+                  onChange={(e) => updateShopItem(item.id, 'description', e.target.value)}
+                  placeholder="Descripción"
+                  rows="2"
+                />
+
+                <div className="shop-item-footer">
+                  <div className="shop-item-price-config">
+                    <span className="price-label">💰 Precio:</span>
+                    <input
+                      type="number"
+                      className="config-input-number"
+                      value={item.price}
+                      onChange={(e) => updateShopItem(item.id, 'price', e.target.value)}
+                      min="1"
+                      max="999"
+                    />
+                  </div>
+                  
+                  <select
+                    className="config-select-type"
+                    value={item.type}
+                    onChange={(e) => updateShopItem(item.id, 'type', e.target.value)}
+                  >
+                    <option value="heal">Curación</option>
+                    <option value="skip_task">Saltar tarea</option>
+                    <option value="complete_group">Completar grupo</option>
+                    <option value="custom">Personalizado</option>
+                  </select>
+                </div>
+              </div>
+            ))}
+
+            <button className="btn-add-item" onClick={addShopItem}>
+              ➕ Añadir Item
+            </button>
+          </section>
 
           <div className="config-actions">
             <button type="button" className="btn-primary" onClick={saveConfig}>
