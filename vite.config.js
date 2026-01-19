@@ -8,7 +8,10 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: false, // usamos tu manifest existente
-      includeAssets: ["icons/icon-192.png", "icons/icon-512.png"],
+      includeAssets: [
+        "icons/web-app-manifest-192x192.png",
+        "icons/web-app-manifest-512x512.png",
+      ],
     }),
   ],
 });
