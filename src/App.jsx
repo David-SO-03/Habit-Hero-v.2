@@ -575,15 +575,10 @@ function HabitHeroWeekly() {
       // ⭐ NUEVO: Si el grupo se "descompletó"
       if (wasGroupComplete && !isGroupCompleteNow) {
         const coinsToRemove = config.coinsPerGroup || 10;
-        updates.coins = Math.max(0, (config.coins || 0) - coinsToRemove);
-        updates.totalCoinsEarned = Math.max(
-          0,
-          (config.totalCoinsEarned || 0) - coinsToRemove
-        );
-        updates.weekCoinsEarned = Math.max(
-          0,
-          (config.weekCoinsEarned || 0) - coinsToRemove
-        );
+        updates.coins = (config.coins || 0) - coinsToRemove; // Permite monedas negativas
+        updates.totalCoinsEarned =
+          (config.totalCoinsEarned || 0) - coinsToRemove; // Permite negativas
+        updates.weekCoinsEarned = (config.weekCoinsEarned || 0) - coinsToRemove; // Permite negativas
         updates.weeklyHealthRegenUsed = (
           config.weeklyHealthRegenUsed || []
         ).filter((id) => id !== groupId);
