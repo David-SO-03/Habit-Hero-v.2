@@ -138,7 +138,7 @@ const DEFAULT_CONFIG = {
       price: 25,
       type: "heal",
       icon: "❤️",
-      healAmount: 20,
+      healAmount: 5,
     },
   ],
   purchasedItems: [],
@@ -2175,16 +2175,18 @@ function HabitHeroWeekly() {
     };
 
     const saveShopConfig = () => {
-      const invalidItems = tempShopItems.filter(
-        (item) =>
-          item.price <= 0 ||
-          (item.type === "heal" && (item.healAmount || 0) <= 0)
-      );
+      const invalidItems = tempShopItems.filter((item) => {
+        const price = Number(item.price);
+        const heal = Number(item.healAmount);
 
-      if (invalidItems.length > 0) {
-        alert("⚠️ Todos los precios y cantidades deben ser mayores a 0");
-        return;
-      }
+        if (Number.isNaN(price) || price <= 0) return true;
+
+        if (item.type === "heal") {
+          if (Number.isNaN(heal) || heal <= 0) return true;
+        }
+
+        return false;
+      });
 
       updateConfig({ shopItems: tempShopItems });
       setShowShopConfig(false);
@@ -2373,18 +2375,21 @@ function HabitHeroWeekly() {
                     </div>
                   )}
                 </div>
-
-                <div
-                  style={{
-                    marginTop: "0.75rem",
-                    fontSize: "0.75rem",
-                    color: "rgba(255, 255, 255, 0.5)",
-                  }}
+                <select
+                  className="config-select-type"
+                  value={item.type}
+                  onChange={(e) =>
+                    updateShopItem(item.id, "type", e.target.value)
+                  }
                 >
-                  Tipo: <strong>{item.type}</strong>
-                </div>
+                  <option value="heal">Curación</option>
+                  <option value="skip_task">Saltar tarea</option>
+                  <option value="complete_group">Completar grupo</option>
+                  <option value="custom">Personalizado</option>
+                </select>
               </div>
             ))}
+
             <button className="btn-add-item" onClick={addShopItem}>
               ➕ Añadir Item
             </button>
