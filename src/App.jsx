@@ -2082,7 +2082,13 @@ function HabitHeroWeekly() {
       <div className="shop-overlay" onClick={() => setShowShop(false)}>
         <div className="shop-panel" onClick={(e) => e.stopPropagation()}>
           <div className="shop-header">
-            <h2>🛒 Tienda</h2>
+            <h2
+              style={{
+                paddingRight: "5%",
+              }}
+            >
+              🛒 Tienda
+            </h2>
             <div className="player-coins">
               <Coins size={20} color="#f59e0b" fill="#f59e0b" />
               <span>{config.coins}</span>
@@ -2348,12 +2354,12 @@ function HabitHeroWeekly() {
                       >
                         <input
                           type="number"
-                          value={item.healAmount || 20}
+                          value={item.healAmount ?? 20}
                           onChange={(e) =>
                             updateShopItem(
                               item.id,
                               "healAmount",
-                              e.target.value
+                              Number(e.target.value)
                             )
                           }
                           min="1"
