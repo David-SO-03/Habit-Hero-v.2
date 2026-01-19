@@ -6,7 +6,6 @@
 }
 
 .logo {
-  height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
@@ -48,7 +47,7 @@
 }
 
 body {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
   color: #fff;
   min-height: 100vh;
@@ -85,7 +84,7 @@ body {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   letter-spacing: 0.5px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -98,7 +97,8 @@ body {
   flex-shrink: 0;
 }
 
-.btn-history, .btn-settings {
+.btn-history,
+.btn-settings {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem 0.75rem;
@@ -115,7 +115,8 @@ body {
   overflow: hidden;
 }
 
-.btn-history::after, .btn-settings::after {
+.btn-history::after,
+.btn-settings::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 0.5rem);
@@ -134,23 +135,31 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.btn-history:hover::after, .btn-settings:hover::after {
+.btn-history:hover::after,
+.btn-settings:hover::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
 
-.btn-history::before, .btn-settings::before {
-  content: '';
+.btn-history::before,
+.btn-settings::before {
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
-.btn-history:hover::before, .btn-settings:hover::before {
+.btn-history:hover::before,
+.btn-settings:hover::before {
   left: 100%;
 }
 
@@ -170,7 +179,8 @@ body {
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.btn-history svg, .btn-settings svg {
+.btn-history svg,
+.btn-settings svg {
   transition: transform 0.3s ease;
 }
 
@@ -245,7 +255,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   font-size: 1.125rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -275,8 +285,7 @@ body {
 
 .week-dot.passed {
   background: linear-gradient(135deg, #10b981, #3b82f6);
-  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6),
-              0 0 24px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.6), 0 0 24px rgba(59, 130, 246, 0.4);
   animation: dotBounce 0.6s ease-out;
 }
 
@@ -293,7 +302,11 @@ body {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(16, 185, 129, 0.4) 0%,
+    transparent 70%
+  );
   animation: glowPulse 2s ease-in-out infinite;
 }
 
@@ -312,7 +325,8 @@ body {
 }
 
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: translate(-50%, -50%) scale(1);
   }
@@ -332,7 +346,7 @@ body {
 .days-big-number {
   font-size: 3rem;
   font-weight: 700;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -431,7 +445,7 @@ body {
 }
 
 .group-progress {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -467,7 +481,11 @@ body {
 }
 
 .tasks-panel {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid;
   border-radius: 24px;
   padding: 0;
@@ -519,7 +537,7 @@ body {
 }
 
 .group-progress-big {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 2rem;
   font-weight: 700;
   position: absolute;
@@ -553,7 +571,7 @@ body {
 }
 
 .task-item::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -637,16 +655,30 @@ body {
 }
 
 @keyframes taskPop {
-  0% { transform: scale(1); }
-  30% { transform: scale(1.25); }
-  60% { transform: scale(1.05); }
-  100% { transform: scale(1.1); }
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.25);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes taskUnpop {
-  0% { transform: scale(1.1); }
-  50% { transform: scale(0.9); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* PartÃ­culas de confetti */
@@ -692,7 +724,7 @@ body {
 .task-weight {
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.5);
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
 }
 
 .tasks-summary {
@@ -790,7 +822,7 @@ body {
   border-radius: 12px;
   padding: 0.875rem;
   color: #fff;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
 }
@@ -817,7 +849,7 @@ body {
 }
 
 .weight-total {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   margin-bottom: 1rem;
   font-size: 1rem;
@@ -838,7 +870,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   font-size: 0.875rem;
   color: #6366f1;
@@ -853,7 +885,7 @@ body {
   border-radius: 8px;
   padding: 0.75rem;
   color: #fff;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 0.875rem;
 }
 
@@ -877,7 +909,7 @@ body {
   border-radius: 8px;
   padding: 0.75rem 0.5rem;
   color: #fff;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.875rem;
   font-weight: 700;
   text-align: center;
@@ -890,7 +922,7 @@ body {
 }
 
 .weight-label {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
 }
@@ -903,12 +935,13 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.btn-primary, .btn-danger {
+.btn-primary,
+.btn-danger {
   flex: 1;
   padding: 1rem;
   border-radius: 12px;
   cursor: pointer;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   transition: all 0.3s ease;
@@ -946,7 +979,7 @@ body {
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: #f59e0b;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
 }
 
 .shop-config-section {
@@ -980,7 +1013,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   font-size: 0.875rem;
   color: #f59e0b;
@@ -1029,7 +1062,7 @@ body {
   border-radius: 8px;
   padding: 0.75rem;
   color: #fff;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 0.875rem;
   margin-bottom: 0.75rem;
   resize: vertical;
@@ -1056,7 +1089,7 @@ body {
 }
 
 .price-label {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
@@ -1069,7 +1102,7 @@ body {
   border-radius: 8px;
   padding: 0.75rem;
   color: #fff;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -1097,7 +1130,7 @@ body {
   font-size: 0.9375rem;
   font-weight: 700;
   transition: all 0.3s ease;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
 }
 
 .btn-add-item:hover {
@@ -1125,7 +1158,11 @@ body {
 }
 
 .reset-modal {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid rgba(99, 102, 241, 0.5);
   border-radius: 24px;
   padding: 2rem;
@@ -1142,7 +1179,7 @@ body {
 }
 
 .reset-modal-title {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.75rem;
   font-weight: 700;
   color: #6366f1;
@@ -1188,7 +1225,7 @@ body {
 .reset-modal-btn {
   padding: 1rem 2rem;
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -1239,7 +1276,11 @@ body {
 }
 
 .validation-modal {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid rgba(239, 68, 68, 0.5);
   border-radius: 24px;
   padding: 2rem;
@@ -1258,7 +1299,7 @@ body {
 }
 
 .validation-modal-title {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.75rem;
   font-weight: 700;
   color: #ef4444;
@@ -1303,7 +1344,7 @@ body {
 }
 
 .validation-group-total {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -1336,7 +1377,7 @@ body {
 .validation-modal-btn {
   padding: 1rem 2rem;
   border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -1376,7 +1417,11 @@ body {
 }
 
 .history-panel {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid rgba(139, 92, 246, 0.5);
   border-radius: 24px;
   padding: 0;
@@ -1450,7 +1495,7 @@ body {
 }
 
 .history-week-progress {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 2rem;
   font-weight: 700;
   color: #8b5cf6;
@@ -1468,7 +1513,7 @@ body {
 }
 
 .history-stat-value {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.5rem;
   font-weight: 700;
   color: #fff;
@@ -1530,7 +1575,11 @@ body {
 }
 
 .week-detail-modal {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid rgba(139, 92, 246, 0.5);
   border-radius: 24px;
   max-width: 800px;
@@ -1567,7 +1616,7 @@ body {
 }
 
 .week-detail-progress {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 2rem;
   font-weight: 700;
   color: #8b5cf6;
@@ -1608,7 +1657,7 @@ body {
 }
 
 .week-detail-group-progress {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.5rem;
   font-weight: 700;
 }
@@ -1649,15 +1698,19 @@ body {
 }
 
 .week-detail-task-weight {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
 /* Animaciones */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
@@ -1690,7 +1743,11 @@ body {
   transform: translateX(-50%);
   max-width: 400px;
   width: 90%;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.98), rgba(139, 92, 246, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.98),
+    rgba(139, 92, 246, 0.98)
+  );
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 1rem 1.5rem;
@@ -1741,7 +1798,11 @@ body {
 
 .celebration-modal {
   position: relative;
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid;
   border-image: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6) 1;
   border-radius: 24px;
@@ -1798,7 +1859,8 @@ body {
 }
 
 @keyframes iconBounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) scale(1);
   }
   50% {
@@ -1807,7 +1869,7 @@ body {
 }
 
 .celebration-title {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 3rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #3b82f6, #8b5cf6);
@@ -1838,7 +1900,7 @@ body {
 }
 
 .celebration-stat-number {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 2.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, #10b981, #3b82f6);
@@ -1870,7 +1932,7 @@ body {
   background: linear-gradient(135deg, #10b981, #3b82f6);
   border: none;
   color: #fff;
-  font-family: 'Outfit', sans-serif;
+  font-family: "Outfit", sans-serif;
   font-size: 1.125rem;
   font-weight: 700;
   padding: 1rem 3rem;
@@ -1908,7 +1970,7 @@ body {
 }
 
 .stat-value {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-weight: 700;
   font-size: 0.8125rem;
 }
@@ -1952,7 +2014,11 @@ body {
   transform: translateX(-50%);
   max-width: 350px;
   width: 90%;
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.98), rgba(5, 150, 105, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.98),
+    rgba(5, 150, 105, 0.98)
+  );
   backdrop-filter: blur(10px);
   border-radius: 16px;
   padding: 1rem 1.5rem;
@@ -2008,7 +2074,11 @@ body {
 }
 
 .shop-panel {
-  background: linear-gradient(135deg, rgba(15, 15, 30, 0.98), rgba(26, 26, 46, 0.98));
+  background: linear-gradient(
+    135deg,
+    rgba(15, 15, 30, 0.98),
+    rgba(26, 26, 46, 0.98)
+  );
   border: 2px solid rgba(245, 158, 11, 0.5);
   border-radius: 24px;
   padding: 0;
@@ -2038,7 +2108,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.5rem;
   font-weight: 700;
   color: #f59e0b;
@@ -2099,7 +2169,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 1.25rem;
   font-weight: 700;
   color: #f59e0b;
@@ -2134,7 +2204,11 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 0, 0, 0.95));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(20, 0, 0, 0.95)
+  );
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -2150,9 +2224,23 @@ body {
 }
 
 @keyframes deathShake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-  20%, 40%, 60%, 80% { transform: translateX(10px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
 }
 
 .death-skull {
@@ -2162,12 +2250,19 @@ body {
 }
 
 @keyframes deathPulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.8; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
 }
 
 .death-title {
-  font-family: 'Space Mono', monospace;
+  font-family: "Space Mono", monospace;
   font-size: 3rem;
   font-weight: 700;
   color: #ef4444;
@@ -2245,11 +2340,11 @@ body {
     gap: 0.5rem;
     margin-left: auto;
   }
-  
+
   .stat-item {
     padding: 0.375rem 0.5rem;
   }
-  
+
   .stat-value {
     font-size: 0.8125rem;
   }
@@ -2263,7 +2358,9 @@ body {
     margin-top: 0.5rem;
   }
 
-  .btn-history, .btn-settings, .btn-shop {
+  .btn-history,
+  .btn-settings,
+  .btn-shop {
     flex: 1;
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
@@ -2271,7 +2368,9 @@ body {
     justify-content: center;
   }
 
-  .btn-history svg, .btn-settings svg, .btn-shop svg {
+  .btn-history svg,
+  .btn-settings svg,
+  .btn-shop svg {
     width: 16px;
     height: 16px;
   }
@@ -2383,12 +2482,14 @@ body {
     gap: 0.5rem;
   }
 
-  .btn-history, .btn-settings {
+  .btn-history,
+  .btn-settings {
     font-size: 0.8125rem;
     padding: 0.5rem 0.875rem;
   }
 
-  .btn-history::after, .btn-settings::after {
+  .btn-history::after,
+  .btn-settings::after {
     display: none;
   }
 
@@ -2456,7 +2557,7 @@ body {
   .death-skull {
     font-size: 5rem;
   }
-  
+
   .death-title {
     font-size: 2rem;
   }
@@ -2496,19 +2597,23 @@ body {
     margin-top: 0.375rem;
   }
 
-  .btn-history .btn-text, 
-  .btn-settings .btn-text, 
+  .btn-history .btn-text,
+  .btn-settings .btn-text,
   .btn-shop .btn-text {
     display: none;
   }
 
-  .btn-history, .btn-settings, .btn-shop {
+  .btn-history,
+  .btn-settings,
+  .btn-shop {
     padding: 0.5rem;
     min-width: auto;
     flex: 1;
   }
 
-  .btn-history svg, .btn-settings svg, .btn-shop svg {
+  .btn-history svg,
+  .btn-settings svg,
+  .btn-shop svg {
     width: 18px;
     height: 18px;
   }
@@ -2529,7 +2634,6 @@ body {
     padding: 1rem;
   }
 }
-
 
 @media (min-width: 769px) {
   .btn-text {
