@@ -100,18 +100,18 @@ const DEFAULT_CONFIG = {
   weekHistory: [],
 
   // ⭐ NUEVO: Sistema de economía
-  coins: 0, // Monedas actuales
-  coinsPerGroup: 10, // Monedas por completar grupo (configurable)
-  totalCoinsEarned: 0, // Histórico
-  weekCoinsEarned: 0, // Esta semana
+  coins: 0,
+  coinsPerGroup: 10,
+  totalCoinsEarned: 0,
+  weekCoinsEarned: 0,
 
   // ⭐ NUEVO: Sistema de vida
-  health: 100, // Vida actual
-  maxHealth: 100, // Vida máxima
-  healthLossPerIncompleteGroup: 15, // Vida que pierdes por grupo incompleto
-  isDead: false, // Estado de muerte
-  deathPenalty: "Hacer 50 flexiones", // Castigo configurable
-  weeklyHealthRegenUsed: [], // IDs de grupos que ya regeneraron
+  health: 100,
+  maxHealth: 100,
+  healthLossPerIncompleteGroup: 15,
+  isDead: false,
+  deathPenalty: "Hacer 50 flexiones",
+  weeklyHealthRegenUsed: [],
 
   // ⭐ NUEVO: Tienda
   shopItems: [
@@ -138,9 +138,10 @@ const DEFAULT_CONFIG = {
       price: 25,
       type: "heal",
       icon: "❤️",
+      healAmount: 20,
     },
   ],
-  purchasedItems: [], // Items comprados esta semana
+  purchasedItems: [],
 };
 
 const getDefaultConfig = () => JSON.parse(JSON.stringify(DEFAULT_CONFIG));
@@ -157,17 +158,15 @@ function HabitHeroWeekly() {
   const [epicAnimationTriggered, setEpicAnimationTriggered] = useState(false);
   const [showEpicAnimation, setShowEpicAnimation] = useState(false);
   const [showShop, setShowShop] = useState(false);
+  const [showShopConfig, setShowShopConfig] = useState(false);
   const [showDeathScreen, setShowDeathScreen] = useState(false);
 
-  // Ref para hacer scroll al hexágono
   const hexagonRef = useRef(null);
 
-  // Cargar datos guardados
   useEffect(() => {
     loadGameData();
   }, []);
 
-  // Registrar Service Worker y pedir permisos de notificación
   useEffect(() => {
     registerServiceWorker();
     requestNotificationPermission();
@@ -186,12 +185,10 @@ function HabitHeroWeekly() {
     }
   };
 
-  // Pedir permisos de notificación al iniciar la app
   useEffect(() => {
     requestNotificationPermission();
   }, []);
 
-  // Verificar y enviar notificaciones cuando carguen los datos
   useEffect(() => {
     if (config.weekStart) {
       checkAndSendNotifications();
@@ -201,7 +198,7 @@ function HabitHeroWeekly() {
   useEffect(() => {
     const loadingEl = document.getElementById("loading");
     if (loadingEl) loadingEl.style.display = "none";
-  }, []); // se ejecuta al montar el componente
+  }, []);
 
   const requestNotificationPermission = async () => {
     if ("Notification" in window && Notification.permission === "default") {
@@ -214,7 +211,6 @@ function HabitHeroWeekly() {
   };
 
   const checkAndSendNotifications = () => {
-    // Solo si tenemos permisos
     if (!("Notification" in window) || Notification.permission !== "granted") {
       return;
     }
@@ -223,7 +219,6 @@ function HabitHeroWeekly() {
     const daysLeft = getDaysLeftInWeek();
     const isComplete = isWeekComplete();
 
-    // Notificación 1: Queda 1 día y NO está completo
     if (daysLeft === 1 && !isComplete) {
       const notifKey = `notif-last-day-${config.weekStart}`;
       const alreadySent = localStorage.getItem(notifKey);
@@ -238,7 +233,6 @@ function HabitHeroWeekly() {
       }
     }
 
-    // Notificación 2: Nueva semana (día 0 o 1, y no se había notificado)
     if (daysLeft >= 6 && daysLeft <= 7) {
       const notifKey = `notif-new-week-${config.weekStart}`;
       const alreadySent = localStorage.getItem(notifKey);
@@ -255,7 +249,6 @@ function HabitHeroWeekly() {
   };
 
   const sendNotification = (title, body, icon) => {
-    // Verificar si la página está visible (no enviar si ya está abierta)
     if (document.hidden) {
       new Notification(title, {
         body: body,
@@ -266,13 +259,11 @@ function HabitHeroWeekly() {
         requireInteraction: false,
       });
     } else {
-      // Si la app está abierta, mostrar un banner discreto en lugar de notificación
       showInAppBanner(title, body);
     }
   };
 
   const showInAppBanner = (title, message) => {
-    // Crear banner temporal
     const banner = document.createElement("div");
     banner.className = "notification-banner";
     banner.innerHTML = `
@@ -283,17 +274,14 @@ function HabitHeroWeekly() {
     `;
     document.body.appendChild(banner);
 
-    // Animar entrada
     setTimeout(() => banner.classList.add("show"), 100);
 
-    // Remover después de 5 segundos
     setTimeout(() => {
       banner.classList.remove("show");
       setTimeout(() => banner.remove(), 300);
     }, 5000);
   };
 
-  // Resetear el estado de animación épica cuando cambia la semana
   useEffect(() => {
     setEpicAnimationTriggered(false);
     setShowEpicAnimation(false);
@@ -313,7 +301,6 @@ function HabitHeroWeekly() {
         if (result && result.value) {
           const savedData = JSON.parse(result.value);
 
-          // Verificar si es una nueva semana
           const savedWeekStart = new Date(savedData.weekStart);
           const today = new Date();
           const daysSinceStart = Math.floor(
@@ -321,11 +308,9 @@ function HabitHeroWeekly() {
           );
 
           if (daysSinceStart >= 7) {
-            // Guardar semana completada en historial
             const weekEnd = new Date(savedWeekStart);
-            weekEnd.setDate(weekEnd.getDate() + 6); // Último día de la semana
+            weekEnd.setDate(weekEnd.getDate() + 6);
 
-            // ⭐ NUEVO: Calcular pérdida de vida
             const incompleteGroups = savedData.groups.filter(
               (g) => calculateGroupProgress(g) < 100
             );
@@ -340,18 +325,16 @@ function HabitHeroWeekly() {
             const weekRecord = {
               weekStart: savedData.weekStart,
               weekEnd: weekEnd.toISOString().split("T")[0],
-              groups: JSON.parse(JSON.stringify(savedData.groups)), // Copia profunda
+              groups: JSON.parse(JSON.stringify(savedData.groups)),
               coinsEarned: savedData.weekCoinsEarned || 0,
-              healthLost: healthLoss, // ⭐ NUEVO
+              healthLost: healthLoss,
             };
 
-            // Añadir al historial y limitar a 52 semanas
             const updatedHistory = [
               weekRecord,
               ...(savedData.weekHistory || []),
             ].slice(0, 52);
 
-            // Nueva semana - resetear tareas pero mantener configuración
             const resetData = {
               ...savedData,
               groups: savedData.groups.map((group) => ({
@@ -363,21 +346,19 @@ function HabitHeroWeekly() {
               })),
               weekStart: today.toISOString().split("T")[0],
               weekHistory: updatedHistory,
-              health: newHealth, // ⭐ NUEVO
-              isDead: newHealth === 0, // ⭐ NUEVO
-              weeklyHealthRegenUsed: [], // ⭐ NUEVO: Resetear regeneración
-              purchasedItems: [], // ⭐ NUEVO: Limpiar items comprados
-              weekCoinsEarned: 0, // ⭐ NUEVO
+              health: newHealth,
+              isDead: newHealth === 0,
+              weeklyHealthRegenUsed: [],
+              purchasedItems: [],
+              weekCoinsEarned: 0,
             };
 
-            // Limpiar flag de celebración de la semana anterior
             const oldCelebrationKey = `celebration-shown-${savedData.weekStart}`;
             localStorage.removeItem(oldCelebrationKey);
 
             setConfig(resetData);
             await saveGameData(resetData);
           } else {
-            // Asegurar que weekHistory existe
             const dataWithHistory = {
               ...savedData,
               weekHistory: savedData.weekHistory || [],
@@ -390,7 +371,6 @@ function HabitHeroWeekly() {
         if (savedData) {
           const parsed = JSON.parse(savedData);
 
-          // Verificar si es una nueva semana
           const savedWeekStart = new Date(parsed.weekStart);
           const today = new Date();
           const daysSinceStart = Math.floor(
@@ -398,7 +378,6 @@ function HabitHeroWeekly() {
           );
 
           if (daysSinceStart >= 7) {
-            // Guardar semana completada en historial
             const weekEnd = new Date(savedWeekStart);
             weekEnd.setDate(weekEnd.getDate() + 6);
 
@@ -426,7 +405,6 @@ function HabitHeroWeekly() {
               weekHistory: updatedHistory,
             };
 
-            // Limpiar flag de celebración de la semana anterior
             const oldCelebrationKey = `celebration-shown-${parsed.weekStart}`;
             localStorage.removeItem(oldCelebrationKey);
 
@@ -467,31 +445,24 @@ function HabitHeroWeekly() {
     saveGameData(newConfig);
   };
 
-  // Secuencia épica de celebración cuando se completa la última tarea
   const triggerEpicCelebration = useCallback(() => {
-    // Verificar INMEDIATAMENTE si ya se mostró esta semana
     const celebrationKey = `celebration-shown-${config.weekStart}`;
     const alreadyShown = localStorage.getItem(celebrationKey);
 
     if (alreadyShown) {
-      return; // Salir inmediatamente si ya se mostró
+      return;
     }
 
-    // Verificar si el modal ya está abierto
     if (showCelebration) {
       return;
     }
 
-    // Marcar como mostrada ANTES de hacer cualquier cosa
     localStorage.setItem(celebrationKey, "true");
 
-    // 1. Activar la animación épica del hexágono
     setShowEpicAnimation(true);
 
-    // 2. Cerrar el panel de tareas
     setSelectedGroupId(null);
 
-    // 3. Hacer scroll suave al hexágono
     setTimeout(() => {
       if (hexagonRef.current) {
         hexagonRef.current.scrollIntoView({
@@ -501,28 +472,24 @@ function HabitHeroWeekly() {
       }
     }, 300);
 
-    // 4. Desactivar la animación después de que termine (1.5s)
     setTimeout(() => {
       setShowEpicAnimation(false);
     }, 1800);
 
-    // 5. Mostrar el modal de celebración
     setTimeout(() => {
       setShowCelebration(true);
       setCelebrationShown(true);
-    }, 2100); // 300ms (cierre panel) + 1800ms (animación hexágono)
+    }, 2100);
   }, [config.weekStart, showCelebration]);
 
   const toggleTask = useCallback(
     (groupId, taskId) => {
-      // Verificar PRIMERO si ya se mostró la celebración esta semana
       const celebrationKey = `celebration-shown-${config.weekStart}`;
       const alreadyShown = localStorage.getItem(celebrationKey);
       const group = config.groups.find((g) => g.id === groupId);
       const task = group.tasks.find((t) => t.id === taskId);
       const wasGroupComplete = calculateGroupProgress(group) === 100;
 
-      // Verificar estado ANTES del toggle
       const wasComplete = isWeekComplete();
 
       const updatedGroups = config.groups.map((group) => {
@@ -540,19 +507,15 @@ function HabitHeroWeekly() {
       });
 
       let updates = { groups: updatedGroups };
-      // Calcular si el grupo se completó ahora
       const updatedGroup = updatedGroups.find((g) => g.id === groupId);
       const isGroupCompleteNow = calculateGroupProgress(updatedGroup) === 100;
 
-      // ⭐ NUEVO: Si el grupo se acaba de completar
       if (!wasGroupComplete && isGroupCompleteNow) {
-        // Dar monedas
         const coinsEarned = config.coinsPerGroup || 10;
         updates.coins = (config.coins || 0) + coinsEarned;
         updates.totalCoinsEarned = (config.totalCoinsEarned || 0) + coinsEarned;
         updates.weekCoinsEarned = (config.weekCoinsEarned || 0) + coinsEarned;
 
-        // Dar vida (solo si no se ha usado esta semana)
         const healthRegenUsed = config.weeklyHealthRegenUsed || [];
         if (
           !healthRegenUsed.includes(groupId) &&
@@ -565,26 +528,23 @@ function HabitHeroWeekly() {
           );
           updates.weeklyHealthRegenUsed = [...healthRegenUsed, groupId];
 
-          // Mostrar notificación
           showRewardNotification(coinsEarned, healthGain);
         } else {
           showRewardNotification(coinsEarned, 0);
         }
       }
 
-      // ⭐ NUEVO: Si el grupo se "descompletó"
       if (wasGroupComplete && !isGroupCompleteNow) {
         const coinsToRemove = config.coinsPerGroup || 10;
-        updates.coins = (config.coins || 0) - coinsToRemove; // Permite monedas negativas
+        updates.coins = (config.coins || 0) - coinsToRemove;
         updates.totalCoinsEarned =
-          (config.totalCoinsEarned || 0) - coinsToRemove; // Permite negativas
-        updates.weekCoinsEarned = (config.weekCoinsEarned || 0) - coinsToRemove; // Permite negativas
+          (config.totalCoinsEarned || 0) - coinsToRemove;
+        updates.weekCoinsEarned = (config.weekCoinsEarned || 0) - coinsToRemove;
         updates.weeklyHealthRegenUsed = (
           config.weeklyHealthRegenUsed || []
         ).filter((id) => id !== groupId);
       }
 
-      // Calcular si quedará completo DESPUÉS del toggle
       const willBeComplete = updatedGroups.every((group) => {
         const completedWeight = group.tasks
           .filter((task) => task.completed)
@@ -592,7 +552,6 @@ function HabitHeroWeekly() {
         return completedWeight === 100;
       });
 
-      // Si NO estaba completo y AHORA sí lo está, Y NO se ha mostrado ya, disparar secuencia épica
       if (
         !wasComplete &&
         willBeComplete &&
@@ -612,7 +571,7 @@ function HabitHeroWeekly() {
     const completedWeight = group.tasks
       .filter((task) => task.completed)
       .reduce((sum, task) => sum + task.weight, 0);
-    return completedWeight; // Ya está en porcentaje (0-100)
+    return completedWeight;
   };
 
   const calculateOverallProgress = () => {
@@ -636,7 +595,6 @@ function HabitHeroWeekly() {
     });
   };
 
-  // Funciones memorizadas para evitar re-renders
   const handleCloseTasksPanel = useCallback(() => {
     setSelectedGroupId(null);
   }, []);
@@ -662,12 +620,82 @@ function HabitHeroWeekly() {
     }, 3000);
   };
 
-  // Componente del Hexágono
+  const showHealthNotification = (health) => {
+    const banner = document.createElement("div");
+    banner.className = "reward-notification";
+    banner.innerHTML = `
+      <div class="reward-content">
+        <strong>❤️ ¡Recuperaste ${health} puntos de vida!</strong>
+        <div class="rewards">
+          ${health > 0 ? `<span class="reward-item">+${health} ❤️</span>` : ""}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 3000);
+  };
+
+  const showSkipSmallNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "reward-notification";
+    banner.innerHTML = `
+      <div class="reward-content">
+        <strong>⏭️ ¡Puedes saltar una tarea! Usa este item sabiamente.</strong>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 3000);
+  };
+
+  const showSkipBigNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "reward-notification";
+    banner.innerHTML = `
+      <div class="reward-content">
+        <strong>🎁 ¡Tienes un día libre! Completa un grupo de objetivos entero.</strong>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 3000);
+  };
+
+  const showDefaultNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "reward-notification";
+    banner.innerHTML = `
+      <div class="reward-content">
+        <strong>🥳 Has comprado este item. ¡Disfrutalo! 🥳</strong>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 3000);
+  };
+
   const HexagonView = () => {
     const centerX = 250;
     const centerY = 250;
-    const baseRadius = 20; // Radio mínimo (centro)
-    const maxRadius = 160; // Radio máximo
+    const baseRadius = 20;
+    const maxRadius = 160;
 
     const calculateRadius = (percentage) => {
       return baseRadius + (maxRadius - baseRadius) * (percentage / 100);
@@ -713,7 +741,6 @@ function HabitHeroWeekly() {
           <div className="stat">
             <span className="stat-label">⏰ Días Restantes</span>
             <div className="days-week-container">
-              {/* Fila de 7 círculos representando la semana */}
               <div className="week-dots">
                 {[...Array(7)].map((_, index) => {
                   const dayPassed = index < 7 - getDaysLeftInWeek();
@@ -734,7 +761,6 @@ function HabitHeroWeekly() {
                 })}
               </div>
 
-              {/* Número grande y texto */}
               <div className="days-number-display">
                 <span className="days-big-number">{getDaysLeftInWeek()}</span>
                 <span className="days-text">
@@ -751,15 +777,12 @@ function HabitHeroWeekly() {
           className={`hexagon-container ${showEpicAnimation ? "complete" : ""}`}
         >
           <svg className="hexagon-svg" viewBox="0 0 500 500">
-            {/* Definir gradientes y filtros */}
             <defs>
-              {/* Gradiente para el hexágono de progreso */}
               <radialGradient id="hexGradient" cx="50%" cy="50%" r="50%">
                 <stop offset="0%" stopColor="rgba(99, 102, 241, 0.4)" />
                 <stop offset="100%" stopColor="rgba(139, 92, 246, 0.1)" />
               </radialGradient>
 
-              {/* Sombra para el hexágono */}
               <filter
                 id="hexShadow"
                 x="-50%"
@@ -778,7 +801,6 @@ function HabitHeroWeekly() {
                 </feMerge>
               </filter>
 
-              {/* Glow para cuando está completo */}
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
                 <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                 <feMerge>
@@ -788,7 +810,6 @@ function HabitHeroWeekly() {
               </filter>
             </defs>
 
-            {/* Círculos concéntricos de fondo */}
             <circle
               cx="250"
               cy="250"
@@ -822,7 +843,6 @@ function HabitHeroWeekly() {
               strokeWidth="1"
             />
 
-            {/* Hexágono de referencia (100%) */}
             <path
               d={createHexagonPath(() => maxRadius)}
               fill="none"
@@ -831,7 +851,6 @@ function HabitHeroWeekly() {
               strokeDasharray="5,5"
             />
 
-            {/* Hexágono de progreso actual con gradiente */}
             <path
               className="hex-progress"
               d={createHexagonPath((group) =>
@@ -843,7 +862,6 @@ function HabitHeroWeekly() {
               filter="url(#hexShadow)"
             />
 
-            {/* Líneas desde el centro a cada nodo con gradiente */}
             {config.groups.map((group) => {
               const progress = calculateGroupProgress(group);
               const radius = calculateRadius(progress);
@@ -851,7 +869,6 @@ function HabitHeroWeekly() {
 
               return (
                 <g key={`line-group-${group.id}`}>
-                  {/* Definir gradiente específico para esta línea usando coordenadas exactas */}
                   <defs>
                     <linearGradient
                       id={`line-gradient-${group.id}`}
@@ -866,7 +883,6 @@ function HabitHeroWeekly() {
                     </linearGradient>
                   </defs>
 
-                  {/* Línea con gradiente */}
                   <line
                     x1={centerX}
                     y1={centerY}
@@ -880,15 +896,13 @@ function HabitHeroWeekly() {
               );
             })}
 
-            {/* Nodos en cada vértice con efectos */}
             {config.groups.map((group) => {
               const progress = calculateGroupProgress(group);
               const radius = calculateRadius(progress);
               const point = getPoint(group.angle, radius);
-              const labelRadius = maxRadius + 70; // Más espacio para las etiquetas
+              const labelRadius = maxRadius + 70;
               const labelPoint = getPoint(group.angle, labelRadius);
 
-              // Función para dividir texto largo en líneas
               const wrapText = (text, maxCharsPerLine = 12) => {
                 const words = text.split(" ");
                 const lines = [];
@@ -913,7 +927,6 @@ function HabitHeroWeekly() {
 
               return (
                 <g key={group.id}>
-                  {/* Glow del nodo */}
                   <circle
                     cx={point.x}
                     cy={point.y}
@@ -923,7 +936,6 @@ function HabitHeroWeekly() {
                     className="node-glow"
                   />
 
-                  {/* Nodo principal */}
                   <circle
                     cx={point.x}
                     cy={point.y}
@@ -937,7 +949,6 @@ function HabitHeroWeekly() {
                     className={progress === 100 ? "node-complete" : ""}
                   />
 
-                  {/* Porcentaje */}
                   <text
                     x={point.x}
                     y={point.y + 5}
@@ -950,13 +961,12 @@ function HabitHeroWeekly() {
                     {progress}
                   </text>
 
-                  {/* Etiqueta del grupo con soporte multi-línea */}
                   <g
                     style={{ cursor: "pointer" }}
                     onClick={() => setSelectedGroupId(group.id)}
                   >
                     {textLines.map((line, index) => {
-                      const lineHeight = 19; // Aumentado para letras más grandes
+                      const lineHeight = 19;
                       const totalHeight = textLines.length * lineHeight;
                       const yOffset =
                         index * lineHeight - totalHeight / 2 + lineHeight / 2;
@@ -981,7 +991,6 @@ function HabitHeroWeekly() {
               );
             })}
 
-            {/* Punto central con animación */}
             <circle
               cx={centerX}
               cy={centerY}
@@ -1030,19 +1039,14 @@ function HabitHeroWeekly() {
     );
   };
 
-  // Panel de Tareas de un Grupo (memorizado para evitar re-renders)
-  // Panel de Tareas de un Grupo (completamente autónomo)
   const TasksPanel = React.memo(
     ({ groupId, allGroups, toggleTask, updateConfig, onClose, visible }) => {
-      // Encontrar el grupo actual
       const group = allGroups.find((g) => g.id === groupId);
 
-      // Estado local para updates instantáneos (optimistic UI)
       const [localTasks, setLocalTasks] = useState(group ? group.tasks : []);
       const [justToggledTaskId, setJustToggledTaskId] = useState(null);
       const prevGroupIdRef = useRef(groupId);
 
-      // Solo sincronizar cuando cambiamos de grupo
       useEffect(() => {
         if (prevGroupIdRef.current !== groupId) {
           const newGroup = allGroups.find((g) => g.id === groupId);
@@ -1061,7 +1065,6 @@ function HabitHeroWeekly() {
       }, [localTasks]);
 
       const createConfetti = (buttonElement, wasCompleted) => {
-        // Solo crear confetti si se está completando (no al descompletar)
         if (wasCompleted) return;
 
         const rect = buttonElement.getBoundingClientRect();
@@ -1074,7 +1077,6 @@ function HabitHeroWeekly() {
           "#ec4899",
         ];
 
-        // Crear 8 partículas de confetti
         for (let i = 0; i < 8; i++) {
           const particle = document.createElement("div");
           particle.className = "confetti-particle";
@@ -1083,7 +1085,6 @@ function HabitHeroWeekly() {
           particle.style.backgroundColor =
             colors[Math.floor(Math.random() * colors.length)];
 
-          // Ángulos distribuidos en círculo
           const angle = (Math.PI * 2 * i) / 8;
           const velocity = 60 + Math.random() * 40;
           particle.style.setProperty("--tx", `${Math.cos(angle) * velocity}px`);
@@ -1095,7 +1096,6 @@ function HabitHeroWeekly() {
 
           document.body.appendChild(particle);
 
-          // Eliminar después de la animación
           setTimeout(() => particle.remove(), 800);
         }
       };
@@ -1105,18 +1105,14 @@ function HabitHeroWeekly() {
           const task = localTasks.find((t) => t.id === taskId);
           const wasCompleted = task?.completed;
 
-          // Marcar esta tarea como la que acaba de ser clicada
           setJustToggledTaskId(taskId);
 
-          // Crear confetti si se está completando
           if (!wasCompleted && event?.currentTarget) {
             createConfetti(event.currentTarget, wasCompleted);
           }
 
-          // Limpiar la marca después de la animación
           setTimeout(() => setJustToggledTaskId(null), 600);
 
-          // Actualizar UI inmediatamente (optimistic)
           setLocalTasks((prev) =>
             prev.map((task) =>
               task.id === taskId
@@ -1125,7 +1121,6 @@ function HabitHeroWeekly() {
             )
           );
 
-          // Llamar a toggleTask que maneja la lógica de celebración épica
           requestAnimationFrame(() => {
             toggleTask(groupId, taskId);
           });
@@ -1204,7 +1199,6 @@ function HabitHeroWeekly() {
       );
     },
     (prevProps, nextProps) => {
-      // Solo re-renderizar si cambia el groupId o visible
       return (
         prevProps.groupId === nextProps.groupId &&
         prevProps.visible === nextProps.visible
@@ -1212,7 +1206,6 @@ function HabitHeroWeekly() {
     }
   );
 
-  // Panel de Configuración
   const ConfigPanel = () => {
     const [tempConfig, setTempConfig] = useState({
       ...JSON.parse(JSON.stringify(config)),
@@ -1254,7 +1247,6 @@ function HabitHeroWeekly() {
           if (g.id === groupId) {
             const total = g.tasks.reduce((sum, t) => sum + t.weight, 0);
             if (total === 0) {
-              // Si todos son 0, distribuir equitativamente
               const equalWeight = Math.floor(100 / g.tasks.length);
               const remainder = 100 - equalWeight * g.tasks.length;
               return {
@@ -1265,13 +1257,11 @@ function HabitHeroWeekly() {
                 })),
               };
             } else {
-              // Normalizar proporcionalmente
               const normalizedTasks = g.tasks.map((t) => ({
                 ...t,
                 weight: Math.floor((t.weight / total) * 100),
               }));
 
-              // Calcular la diferencia y añadirla a la primera tarea
               const sumAfterRounding = normalizedTasks.reduce(
                 (sum, t) => sum + t.weight,
                 0
@@ -1294,7 +1284,6 @@ function HabitHeroWeekly() {
     };
 
     const saveConfig = () => {
-      // Validar que todos los grupos sumen 100%
       const invalid = tempConfig.groups.filter((group) => {
         const total = group.tasks.reduce((sum, t) => sum + t.weight, 0);
         return total !== 100;
@@ -1305,7 +1294,6 @@ function HabitHeroWeekly() {
         return;
       }
 
-      // Si todo está bien, guardar
       updateConfig(tempConfig);
       setShowConfig(false);
     };
@@ -1436,7 +1424,6 @@ function HabitHeroWeekly() {
             );
           })}
 
-          {/* Sección de Items de la Tienda */}
           <section className="config-section shop-config-section">
             <h3 className="config-section-title">🛒 Items de la Tienda</h3>
 
@@ -1529,7 +1516,6 @@ function HabitHeroWeekly() {
           </div>
         </div>
 
-        {/* Modal de Validación */}
         {invalidGroups.length > 0 && (
           <div
             className="validation-modal-overlay"
@@ -1589,7 +1575,6 @@ function HabitHeroWeekly() {
     );
   };
 
-  // Componente de Historial de Semanas
   const HistoryView = () => {
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
@@ -1679,14 +1664,12 @@ function HabitHeroWeekly() {
                     </div>
                     <div className="history-hexagon-mini">
                       <svg viewBox="0 0 100 100" width="60" height="60">
-                        {/* Hexágono de referencia */}
                         <path
                           d={createMiniHexPath(week.groups, 40, () => 40)}
                           fill="none"
                           stroke="rgba(255, 255, 255, 0.2)"
                           strokeWidth="1"
                         />
-                        {/* Hexágono de progreso */}
                         <path
                           d={createMiniHexPath(week.groups, 40, (group) => {
                             const groupProgress = calculateGroupProgress(group);
@@ -1705,7 +1688,6 @@ function HabitHeroWeekly() {
           </div>
         </div>
 
-        {/* Modal de detalle de semana */}
         {selectedWeekHistory && (
           <WeekDetailModal
             week={selectedWeekHistory}
@@ -1716,7 +1698,6 @@ function HabitHeroWeekly() {
     );
   };
 
-  // Función auxiliar para crear mini hexágonos
   const createMiniHexPath = (groups, maxRadius, radiusFunc) => {
     const centerX = 50;
     const centerY = 50;
@@ -1740,7 +1721,6 @@ function HabitHeroWeekly() {
     );
   };
 
-  // Modal de detalle de semana pasada
   const WeekDetailModal = ({ week, onClose }) => {
     const formatDate = (dateStr) => {
       const date = new Date(dateStr);
@@ -1772,9 +1752,7 @@ function HabitHeroWeekly() {
             <div className="week-detail-progress">{progress.toFixed(1)}%</div>
           </div>
 
-          {/* Hexágono grande */}
           <svg className="week-detail-hexagon" viewBox="0 0 500 500">
-            {/* Hexágono de referencia (100%) */}
             <path
               d={createDetailHexPath(week.groups, () => 160)}
               fill="none"
@@ -1783,7 +1761,6 @@ function HabitHeroWeekly() {
               strokeDasharray="5,5"
             />
 
-            {/* Hexágono de progreso */}
             <path
               d={createDetailHexPath(week.groups, (group) => {
                 const groupProgress = calculateGroupProgress(group);
@@ -1794,7 +1771,6 @@ function HabitHeroWeekly() {
               strokeWidth="2"
             />
 
-            {/* Líneas y nodos */}
             {week.groups.map((group) => {
               const groupProgress = calculateGroupProgress(group);
               const radius = 20 + (140 * groupProgress) / 100;
@@ -1804,7 +1780,6 @@ function HabitHeroWeekly() {
 
               return (
                 <g key={group.id}>
-                  {/* Línea */}
                   <line
                     x1="250"
                     y1="250"
@@ -1815,7 +1790,6 @@ function HabitHeroWeekly() {
                     opacity="0.5"
                   />
 
-                  {/* Nodo */}
                   <circle
                     cx={point.x}
                     cy={point.y}
@@ -1825,7 +1799,6 @@ function HabitHeroWeekly() {
                     strokeWidth="2"
                   />
 
-                  {/* Porcentaje */}
                   <text
                     x={point.x}
                     y={point.y + 4}
@@ -1837,7 +1810,6 @@ function HabitHeroWeekly() {
                     {groupProgress}
                   </text>
 
-                  {/* Etiqueta */}
                   <text
                     x={labelPoint.x}
                     y={labelPoint.y}
@@ -1852,11 +1824,9 @@ function HabitHeroWeekly() {
               );
             })}
 
-            {/* Centro */}
             <circle cx="250" cy="250" r="6" fill="#6366f1" />
           </svg>
 
-          {/* Lista de grupos con tareas */}
           <div className="week-detail-groups">
             {week.groups.map((group) => (
               <div key={group.id} className="week-detail-group">
@@ -1919,12 +1889,10 @@ function HabitHeroWeekly() {
     };
   };
 
-  // Modal de Celebración Épica
   const CelebrationModal = () => {
     const [confettiPieces, setConfettiPieces] = useState([]);
 
     useEffect(() => {
-      // Crear confeti masivo
       const pieces = [];
       for (let i = 0; i < 80; i++) {
         pieces.push({
@@ -1948,13 +1916,12 @@ function HabitHeroWeekly() {
     const handleClose = () => {
       setShowCelebration(false);
       setShowEpicAnimation(false);
-      setEpicAnimationTriggered(true); // Marcar como ya ocurrida
+      setEpicAnimationTriggered(true);
     };
 
     return (
       <div className="celebration-overlay" onClick={handleClose}>
         <div className="celebration-modal" onClick={(e) => e.stopPropagation()}>
-          {/* Confeti */}
           {confettiPieces.map((piece) => (
             <div
               key={piece.id}
@@ -1968,7 +1935,6 @@ function HabitHeroWeekly() {
             />
           ))}
 
-          {/* Contenido */}
           <div className="celebration-content">
             <div className="celebration-icon">🎉</div>
             <h1 className="celebration-title">¡INCREÍBLE!</h1>
@@ -2006,19 +1972,15 @@ function HabitHeroWeekly() {
     );
   };
 
-  // Modal de Confirmación de Reset
   const ResetConfirmModal = () => {
     const confirmReset = () => {
-      // Limpiar flag de celebración de la semana actual
       const celebrationKey = `celebration-shown-${config.weekStart}`;
       localStorage.removeItem(celebrationKey);
 
-      // Resetear estados de celebración
       setEpicAnimationTriggered(false);
       setShowEpicAnimation(false);
       setCelebrationShown(false);
 
-      // Guardar semana actual en historial
       const weekStart = new Date(config.weekStart);
       const weekEnd = new Date(weekStart);
       weekEnd.setDate(weekEnd.getDate() + 6);
@@ -2088,7 +2050,7 @@ function HabitHeroWeekly() {
       </div>
     );
   };
-  // ⭐ NUEVO: Componente de Tienda
+
   const ShopPanel = () => {
     const buyItem = (item) => {
       if (config.coins < item.price) {
@@ -2096,21 +2058,21 @@ function HabitHeroWeekly() {
         return;
       }
 
-      // Aplicar efecto del item
       let updates = {
         coins: config.coins - item.price,
         purchasedItems: [...(config.purchasedItems || []), item],
       };
 
       if (item.type === "heal") {
-        updates.health = Math.min(config.maxHealth, config.health + 20);
-        alert("❤️ ¡Recuperaste 20 puntos de vida!");
+        const healAmount = item.healAmount || 20;
+        updates.health = Math.min(config.maxHealth, config.health + healAmount);
+        showHealthNotification(healAmount);
       } else if (item.type === "skip_task") {
-        alert("⏭️ ¡Puedes saltar una tarea! Usa este item sabiamente.");
+        showSkipSmallNotification();
       } else if (item.type === "complete_group") {
-        alert(
-          "🎁 ¡Tienes un día libre! Completa un grupo automáticamente desde Config."
-        );
+        showSkipBigNotification();
+      } else {
+        showDefaultNotification();
       }
 
       updateConfig(updates);
@@ -2125,6 +2087,16 @@ function HabitHeroWeekly() {
               <Coins size={20} color="#f59e0b" fill="#f59e0b" />
               <span>{config.coins}</span>
             </div>
+            <button
+              className="btn-settings"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowShopConfig(true);
+              }}
+              style={{ marginLeft: "auto", marginRight: "0.5rem" }}
+            >
+              <Settings size={18} />
+            </button>
             <button className="btn-close" onClick={() => setShowShop(false)}>
               ✕
             </button>
@@ -2159,7 +2131,287 @@ function HabitHeroWeekly() {
     );
   };
 
-  // ⭐ NUEVO: Pantalla de Muerte
+  const ShopConfigPanel = () => {
+    const [tempShopItems, setTempShopItems] = useState([
+      ...JSON.parse(JSON.stringify(config.shopItems)),
+    ]);
+
+    const updateShopItem = (itemId, field, value) => {
+      setTempShopItems(
+        tempShopItems.map((item) => {
+          if (item.id === itemId) {
+            if (field === "price" || field === "healAmount") {
+              return { ...item, [field]: Number(value) };
+            }
+            return { ...item, [field]: value };
+          }
+          return item;
+        })
+      );
+    };
+
+    const addShopItem = () => {
+      const newId = Math.max(0, ...tempShopItems.map((item) => item.id)) + 1;
+
+      const newItem = {
+        id: newId,
+        name: "Nuevo item",
+        description: "Descripción del item",
+        price: 10,
+        type: "custom",
+        icon: "⭐",
+      };
+
+      setTempShopItems((items) => [...items, newItem]);
+    };
+
+    const deleteShopItem = (itemId) => {
+      if (tempShopItems.length <= 1) {
+        alert("Debe haber al menos un item en la tienda");
+        return;
+      }
+
+      setTempShopItems((items) => items.filter((item) => item.id !== itemId));
+    };
+
+    const saveShopConfig = () => {
+      const invalidItems = tempShopItems.filter(
+        (item) =>
+          item.price <= 0 ||
+          (item.type === "heal" && (item.healAmount || 0) <= 0)
+      );
+
+      if (invalidItems.length > 0) {
+        alert("⚠️ Todos los precios y cantidades deben ser mayores a 0");
+        return;
+      }
+
+      updateConfig({ shopItems: tempShopItems });
+      setShowShopConfig(false);
+      alert("✅ Configuración de la tienda guardada");
+    };
+
+    return (
+      <div className="shop-overlay" onClick={() => setShowShopConfig(false)}>
+        <div
+          className="shop-panel"
+          style={{ maxWidth: "700px" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="shop-header">
+            <h2>⚙️ Configurar Tienda</h2>
+            <button
+              className="btn-close"
+              onClick={() => setShowShopConfig(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="shop-content" style={{ padding: "2rem" }}>
+            {tempShopItems.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "16px",
+                  padding: "1.5rem",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "1rem",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <span style={{ fontSize: "2rem" }}>{item.icon}</span>
+                  <input
+                    type="text"
+                    value={item.name}
+                    onChange={(e) =>
+                      updateShopItem(item.id, "name", e.target.value)
+                    }
+                    placeholder="Nombre del item"
+                    style={{
+                      flex: 1,
+                      background: "rgba(255, 255, 255, 0.05)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderRadius: "8px",
+                      padding: "0.75rem",
+                      color: "#fff",
+                      fontSize: "1rem",
+                      fontWeight: "700",
+                    }}
+                  />
+
+                  <button
+                    className="btn-delete-item"
+                    onClick={() => deleteShopItem(item.id)}
+                    title="Eliminar item"
+                  >
+                    {" "}
+                    🗑️
+                  </button>
+                </div>
+
+                <input
+                  type="text"
+                  value={item.description}
+                  onChange={(e) =>
+                    updateShopItem(item.id, "description", e.target.value)
+                  }
+                  placeholder="Descripción"
+                  style={{
+                    width: "100%",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "8px",
+                    padding: "0.75rem",
+                    color: "#fff",
+                    fontSize: "0.875rem",
+                    marginBottom: "1rem",
+                  }}
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "1rem",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        fontSize: "0.75rem",
+                        color: "rgba(255, 255, 255, 0.6)",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      Precio
+                    </label>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <input
+                        type="number"
+                        value={item.price}
+                        onChange={(e) =>
+                          updateShopItem(item.id, "price", e.target.value)
+                        }
+                        min="1"
+                        style={{
+                          width: "100%",
+                          background: "rgba(255, 255, 255, 0.05)",
+                          border: "1px solid rgba(245, 158, 11, 0.3)",
+                          borderRadius: "8px",
+                          padding: "0.75rem",
+                          color: "#f59e0b",
+                          fontSize: "1rem",
+                          fontWeight: "700",
+                          fontFamily: "'Space Mono', monospace",
+                        }}
+                      />
+                      <Coins size={20} color="#f59e0b" fill="#f59e0b" />
+                    </div>
+                  </div>
+
+                  {item.type === "heal" && (
+                    <div style={{ flex: 1 }}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: "0.75rem",
+                          color: "rgba(255, 255, 255, 0.6)",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        Vida recuperada
+                      </label>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <input
+                          type="number"
+                          value={item.healAmount || 20}
+                          onChange={(e) =>
+                            updateShopItem(
+                              item.id,
+                              "healAmount",
+                              e.target.value
+                            )
+                          }
+                          min="1"
+                          max={config.maxHealth}
+                          style={{
+                            width: "100%",
+                            background: "rgba(255, 255, 255, 0.05)",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            borderRadius: "8px",
+                            padding: "0.75rem",
+                            color: "#ef4444",
+                            fontSize: "1rem",
+                            fontWeight: "700",
+                            fontFamily: "'Space Mono', monospace",
+                          }}
+                        />
+                        <Heart size={20} color="#ef4444" fill="#ef4444" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div
+                  style={{
+                    marginTop: "0.75rem",
+                    fontSize: "0.75rem",
+                    color: "rgba(255, 255, 255, 0.5)",
+                  }}
+                >
+                  Tipo: <strong>{item.type}</strong>
+                </div>
+              </div>
+            ))}
+            <button className="btn-add-item" onClick={addShopItem}>
+              ➕ Añadir Item
+            </button>
+
+            <button
+              onClick={saveShopConfig}
+              style={{
+                width: "100%",
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                border: "none",
+                color: "#fff",
+                padding: "1rem",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: "700",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+              }}
+            >
+              💾 Guardar Configuración
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const DeathScreen = () => {
     const handleRevive = () => {
       if (confirm(`¿Has completado el castigo: "${config.deathPenalty}"?`)) {
@@ -2214,7 +2466,6 @@ function HabitHeroWeekly() {
           </div>
         </div>
         <div className="header-actions">
-          {/* ⭐ NUEVO: Botón de tienda */}
           <button className="btn-shop" onClick={() => setShowShop(true)}>
             <ShoppingBag size={18} />
             <span className="btn-text">Tienda</span>
@@ -2258,6 +2509,8 @@ function HabitHeroWeekly() {
       {showCelebration && <CelebrationModal />}
 
       {showShop && <ShopPanel />}
+
+      {showShopConfig && <ShopConfigPanel />}
 
       {showDeathScreen && <DeathScreen />}
     </div>
