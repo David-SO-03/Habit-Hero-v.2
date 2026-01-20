@@ -21,12 +21,17 @@ const DEFAULT_CONFIG = {
   groups: [
     {
       id: 1,
-      name: "Salud",
+      name: "Liderazgo",
       angle: 0,
       color: "#ef4444",
       tasks: [
-        { id: 1, name: "Hacer ejercicio", weight: 40, completed: false },
-        { id: 2, name: "Descansar bien", weight: 30, completed: false },
+        {
+          id: 1,
+          name: "Hacer reuniones con mi equipo",
+          weight: 40,
+          completed: false,
+        },
+        { id: 2, name: "Ejemplo", weight: 30, completed: false },
         { id: 3, name: "Meditar", weight: 30, completed: false },
       ],
     },
@@ -1319,28 +1324,6 @@ function HabitHeroWeekly() {
       });
     };
 
-    const updateShopItem = (itemId, field, value) => {
-      setTempConfig({
-        ...tempConfig,
-        shopItems: tempConfig.shopItems.map((item) =>
-          item.id === itemId
-            ? { ...item, [field]: field === "price" ? Number(value) : value }
-            : item
-        ),
-      });
-    };
-
-    const deleteShopItem = (itemId) => {
-      if (tempConfig.shopItems.length <= 1) {
-        alert("Debe haber al menos un item en la tienda");
-        return;
-      }
-      setTempConfig({
-        ...tempConfig,
-        shopItems: tempConfig.shopItems.filter((item) => item.id !== itemId),
-      });
-    };
-
     return (
       <div className="config-panel">
         <div className="config-header">
@@ -1423,89 +1406,6 @@ function HabitHeroWeekly() {
               </section>
             );
           })}
-
-          <section className="config-section shop-config-section">
-            <h3 className="config-section-title">🛒 Items de la Tienda</h3>
-
-            {tempConfig.shopItems.map((item, index) => (
-              <div key={item.id} className="shop-item-config">
-                <div className="shop-item-header">
-                  <span className="shop-item-number">{index + 1}</span>
-                  <input
-                    type="text"
-                    className="config-input-icon"
-                    value={item.icon}
-                    onChange={(e) =>
-                      updateShopItem(item.id, "icon", e.target.value)
-                    }
-                    placeholder="Icono"
-                    maxLength="2"
-                  />
-                  <button
-                    className="btn-delete-item"
-                    onClick={() => deleteShopItem(item.id)}
-                    title="Eliminar item"
-                  >
-                    🗑️
-                  </button>
-                </div>
-
-                <input
-                  type="text"
-                  className="config-input-name"
-                  value={item.name}
-                  onChange={(e) =>
-                    updateShopItem(item.id, "name", e.target.value)
-                  }
-                  placeholder="Nombre del item"
-                />
-
-                <textarea
-                  className="config-input-description"
-                  value={item.description}
-                  onChange={(e) =>
-                    updateShopItem(item.id, "description", e.target.value)
-                  }
-                  placeholder="Descripción"
-                  rows="2"
-                />
-
-                <div className="shop-item-footer">
-                  <div className="shop-item-price-config">
-                    <span className="price-label">💰 Precio:</span>
-                    <input
-                      type="number"
-                      className="config-input-number"
-                      value={item.price}
-                      onChange={(e) =>
-                        updateShopItem(item.id, "price", e.target.value)
-                      }
-                      min="1"
-                      max="999"
-                    />
-                  </div>
-
-                  <select
-                    className="config-select-type"
-                    value={item.type}
-                    onChange={(e) =>
-                      updateShopItem(item.id, "type", e.target.value)
-                    }
-                  >
-                    <option value="heal">Curación</option>
-                    <option value="skip_task">Saltar tarea</option>
-                    <option value="complete_group">Completar grupo</option>
-                    <option value="custom">Personalizado</option>
-                  </select>
-                </div>
-              </div>
-            ))}
-
-            <button className="btn-add-item" onClick={addShopItem}>
-              ➕ Añadir Item
-            </button>
-          </section>
-
           <div className="config-actions">
             <button type="button" className="btn-primary" onClick={saveConfig}>
               <Settings size={18} /> Guardar Cambios
@@ -2245,6 +2145,7 @@ function HabitHeroWeekly() {
                     }
                     placeholder="Nombre del item"
                     style={{
+                      minWidth: 0,
                       flex: 1,
                       background: "rgba(255, 255, 255, 0.05)",
                       border: "1px solid rgba(255, 255, 255, 0.1)",
@@ -2459,7 +2360,9 @@ function HabitHeroWeekly() {
   return (
     <div className="app">
       <div className="header">
-        <div className="logo">HABIT HERO</div>
+        <div className="logo">
+          HABIT HERO <br></br> CIUDAD
+        </div>
         <div className="player-stats">
           <div className="stat-item health-stat">
             <Heart
