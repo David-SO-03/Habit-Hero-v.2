@@ -2754,3 +2754,33 @@ body {
     overflow-x: hidden;
   }
 }
+
+.error-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-15px);
+  opacity: 0;
+
+  background: linear-gradient(135deg, #ff3b3b, #c90000);
+  color: #fff;
+
+  padding: 14px 22px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  font-size: 15px;
+  z-index: 9999;
+
+  transition: all 0.3s ease;
+}
+
+.error-notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.error-content strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

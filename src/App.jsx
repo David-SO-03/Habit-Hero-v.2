@@ -21,80 +21,155 @@ const DEFAULT_CONFIG = {
   groups: [
     {
       id: 1,
-      name: "Liderazgo",
+      name: "Cliente y Negocio",
       angle: 0,
       color: "#ef4444",
       tasks: [
         {
           id: 1,
-          name: "Hacer reuniones con mi equipo",
+          name: "¿He contactado con algún cliente esta semana?",
           weight: 40,
           completed: false,
         },
-        { id: 2, name: "Ejemplo", weight: 30, completed: false },
-        { id: 3, name: "Meditar", weight: 30, completed: false },
+        {
+          id: 2,
+          name: "¿He tomado decisiones para mejorar el margen?",
+          weight: 30,
+          completed: false,
+        },
+        {
+          id: 3,
+          name: "¿He propuesto una mejora al cliente o contrato?",
+          weight: 30,
+          completed: false,
+        },
       ],
     },
     {
       id: 2,
-      name: "Trabajo",
+      name: "Excelencia Operativa",
       angle: 60,
       color: "#f59e0b",
       tasks: [
         {
           id: 4,
-          name: "Completar proyecto principal",
+          name: "¿He trabajado con oficio y detalle?",
           weight: 50,
           completed: false,
         },
-        { id: 5, name: "Responder emails", weight: 25, completed: false },
-        { id: 6, name: "Planificar semana", weight: 25, completed: false },
+        {
+          id: 5,
+          name: "¿He aplicado o compartido una buena práctica?",
+          weight: 25,
+          completed: false,
+        },
+        {
+          id: 6,
+          name: "¿He evitado o corregido un error recurrente?",
+          weight: 25,
+          completed: false,
+        },
       ],
     },
     {
       id: 3,
-      name: "Relaciones",
+      name: "Organización, Talento y Cultura",
       angle: 120,
       color: "#10b981",
       tasks: [
-        { id: 7, name: "Llamar a familia", weight: 40, completed: false },
-        { id: 8, name: "Salir con amigos", weight: 30, completed: false },
-        { id: 9, name: "Tiempo en pareja", weight: 30, completed: false },
+        {
+          id: 7,
+          name: "¿He ayudado al equipo a trabajar mejor?",
+          weight: 40,
+          completed: false,
+        },
+        {
+          id: 8,
+          name: "¿He cuidado el buen clima del equipo?",
+          weight: 30,
+          completed: false,
+        },
+        {
+          id: 9,
+          name: "¿He dado o pedido feedback constructivo?",
+          weight: 30,
+          completed: false,
+        },
       ],
     },
     {
       id: 4,
-      name: "Aprendizaje",
+      name: "Liderazgo y Coherencia",
       angle: 180,
       color: "#3b82f6",
       tasks: [
-        { id: 10, name: "Leer 30 minutos", weight: 40, completed: false },
-        { id: 11, name: "Curso online", weight: 35, completed: false },
-        { id: 12, name: "Practicar idioma", weight: 25, completed: false },
+        {
+          id: 10,
+          name: "¿He liderado con el ejemplo?",
+          weight: 40,
+          completed: false,
+        },
+        {
+          id: 11,
+          name: "¿He sido claro y coherente al comunicar?",
+          weight: 35,
+          completed: false,
+        },
+        {
+          id: 12,
+          name: "¿He generado confianza con mis acciones?",
+          weight: 25,
+          completed: false,
+        },
       ],
     },
     {
       id: 5,
-      name: "Ocio",
+      name: "Innovación, IA y Tecnología",
       angle: 240,
       color: "#8b5cf6",
       tasks: [
-        { id: 13, name: "Hobby creativo", weight: 40, completed: false },
-        { id: 14, name: "Ver serie/película", weight: 30, completed: false },
-        { id: 15, name: "Jugar videojuegos", weight: 30, completed: false },
+        {
+          id: 13,
+          name: "¿He usado tecnología para ser más eficiente?",
+          weight: 40,
+          completed: false,
+        },
+        {
+          id: 14,
+          name: "¿He simplificado o automatizado tareas?",
+          weight: 30,
+          completed: false,
+        },
+        {
+          id: 15,
+          name: "¿He probado o propuesto una mejora digital?",
+          weight: 30,
+          completed: false,
+        },
       ],
     },
     {
       id: 6,
-      name: "Finanzas",
+      name: "Energía Personal",
       angle: 300,
       color: "#ec4899",
       tasks: [
-        { id: 16, name: "Revisar gastos", weight: 35, completed: false },
-        { id: 17, name: "Ahorrar/invertir", weight: 40, completed: false },
+        {
+          id: 16,
+          name: "¿He cuidado mi energía física?",
+          weight: 35,
+          completed: false,
+        },
+        {
+          id: 17,
+          name: "¿He dedicado tiempo a mi entorno personal?",
+          weight: 40,
+          completed: false,
+        },
         {
           id: 18,
-          name: "Planificar presupuesto",
+          name: "¿He afrontado la semana con actitud positiva?",
           weight: 25,
           completed: false,
         },
@@ -238,13 +313,13 @@ function HabitHeroWeekly() {
       }
     }
 
-    if (daysLeft >= 6 && daysLeft <= 7) {
+    if (daysLeft === 7) {
       const notifKey = `notif-new-week-${config.weekStart}`;
       const alreadySent = localStorage.getItem(notifKey);
 
       if (!alreadySent) {
         sendNotification(
-          "🎯 ¡Nueva semana comenzó!",
+          "🎯 ¡Ha empezado una nueva semana!",
           "Empieza fuerte y alcanza tus metas. ¡Vamos! 🚀",
           "🎯"
         );
@@ -614,6 +689,61 @@ function HabitHeroWeekly() {
           <span class="reward-item">+${coins} 🪙</span>
           ${health > 0 ? `<span class="reward-item">+${health} ❤️</span>` : ""}
         </div>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 3000);
+  };
+
+  const showNoCoinsNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "error-notification";
+
+    banner.innerHTML = `
+      <div class="error-content">
+        <strong>❌ ¡No tienes suficientes monedas!</strong>
+      </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 50);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 2500);
+  };
+
+  const showItemNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "error-notification";
+
+    banner.innerHTML = `
+      <div class="error-content">
+        <strong>❌ Debe haber al menos un item en la tienda</strong>
+      </div>
+    `;
+
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 50);
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 2500);
+  };
+
+  const showShopConfifNotification = () => {
+    const banner = document.createElement("div");
+    banner.className = "reward-notification";
+    banner.innerHTML = `
+      <div class="reward-content">
+        <strong>✅ Configuración de la tienda guardada</strong>
       </div>
     `;
     document.body.appendChild(banner);
@@ -1954,7 +2084,7 @@ function HabitHeroWeekly() {
   const ShopPanel = () => {
     const buyItem = (item) => {
       if (config.coins < item.price) {
-        alert("¡No tienes suficientes monedas!");
+        showNoCoinsNotification();
         return;
       }
 
@@ -2073,7 +2203,7 @@ function HabitHeroWeekly() {
 
     const deleteShopItem = (itemId) => {
       if (tempShopItems.length <= 1) {
-        alert("Debe haber al menos un item en la tienda");
+        showItemNotification();
         return;
       }
 
@@ -2096,7 +2226,7 @@ function HabitHeroWeekly() {
 
       updateConfig({ shopItems: tempShopItems });
       setShowShopConfig(false);
-      alert("✅ Configuración de la tienda guardada");
+      showShopConfifNotification();
     };
 
     return (
