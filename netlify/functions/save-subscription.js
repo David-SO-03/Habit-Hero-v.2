@@ -23,13 +23,14 @@ export default async function handler(event) {
 
   try {
     await client.connect();
-    await client.query(
-      "INSERT INTO subscriptions (subscription) VALUES ($1)",
-      [JSON.stringify(subscription)]
-    );
+    await client.query("INSERT INTO subscriptions (subscription) VALUES ($1)", [
+      JSON.stringify(subscription),
+    ]);
     return { statusCode: 200, body: "Subscription saved" };
   } catch (err) {
     console.error(err);
     return { statusCode: 500, body: "Error saving subscription" };
   } finally {
-    awa
+    await client.end();
+  }
+}
