@@ -3,14 +3,20 @@ const { Client } = pkg;
 
 export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return {
+      statusCode: 405,
+      body: "Method not allowed",
+    };
   }
 
   let subscription;
   try {
     subscription = JSON.parse(event.body);
   } catch {
-    return new Response("Invalid JSON", { status: 400 });
+    return {
+      statusCode: 400,
+      body: "Invalid JSON",
+    };
   }
 
   const client = new Client({
@@ -23,10 +29,17 @@ export const handler = async (event) => {
     await client.query("INSERT INTO subscriptions (subscription) VALUES ($1)", [
       JSON.stringify(subscription),
     ]);
-    return new Response("Subscription saved", { status: 200 });
+
+    return {
+      statusCode: 200,
+      body: "Subscription saved",
+    };
   } catch (err) {
     console.error("DB error:", err);
-    return new Response("Error saving subscription", { status: 500 });
+    return {
+      statusCode: 500,
+      body: "Error saving subscription",
+    };
   } finally {
     await client.end();
   }
