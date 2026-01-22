@@ -4,11 +4,3 @@
   command = "npm run build"
   publish = "dist"
   functions = "netlify/functions"
-
-[[functions]]
-schedule = "0 10 * * *"
-path = "inactive-users"
-
-[[functions]]
-schedule = "0 9 * * 1"
-path = "new-week"
