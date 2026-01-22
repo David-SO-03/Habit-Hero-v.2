@@ -12,7 +12,9 @@ export async function subscribeToPush() {
   const registration = await navigator.serviceWorker.ready;
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    applicationServerKey: urlBase64ToUint8Array(
+      "BCKKuSk-l0ufVJjAScVp3reJiUOT8SFFFu1xkifLJlk1qHk1mNMovL_nnOu-xMjIAtPlwbv_syvYSfOamvTEcWs"
+    ),
   });
 
   try {
