@@ -19,13 +19,21 @@ const updateSW = registerSW({
   },
   onNeedRefresh() {
     console.log("Nueva versión disponible");
-    // Aquí puedes forzar la actualización automáticamente o preguntar al usuario
     if (confirm("Hay una nueva versión disponible. ¿Quieres actualizar?")) {
-      updateSW(); // Fuerza la actualización
+      updateSW().then(() => window.location.reload()); // recarga UNA sola vez
     }
   },
 });
 
-window.addEventListener("load", () => {
-  subscribeToPush();
+window.addEventListener("load", async () => {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+
+  const registration = await navigator.serviceWorker.ready;
+  let subscription = await registration.pushManager.getSubscription();
+
+  if (!subscription) {
+    subscribeToPush(); // tu función que crea la suscripción y hace POST a save-subscription
+  } else {
+    console.log("Ya existe suscripción push:", subscription);
+  }
 });

@@ -1,21 +1,19 @@
-export const subscribeToPush = async () => {
-  if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
-
-  const permission = await Notification.requestPermission();
-  if (permission !== "granted") return;
-
+export async function subscribeToPush() {
   const registration = await navigator.serviceWorker.ready;
-
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
-    applicationServerKey:
-      "BCKKuSk-l0ufVJjAScVp3reJiUOT8SFFFu1xkifLJlk1qHk1mNMovL_nnOu-xMjIAtPlwbv_syvYSfOamvTEcWs",
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   });
 
-  // Guardar en Neon vía función serverless
-  await fetch("/.netlify/functions/save-subscription", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(subscription),
-  });
-};
+  try {
+    const res = await fetch("/.netlify/functions/save-subscription", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(subscription),
+    });
+    if (!res.ok) throw new Error("No se pudo guardar la suscripción");
+    console.log("Suscripción push guardada correctamente");
+  } catch (err) {
+    console.error("Error guardando suscripción:", err);
+  }
+}

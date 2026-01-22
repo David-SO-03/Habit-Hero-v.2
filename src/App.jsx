@@ -248,24 +248,6 @@ function HabitHeroWeekly() {
   }, []);
 
   useEffect(() => {
-    registerServiceWorker();
-    requestNotificationPermission();
-  }, []);
-
-  const registerServiceWorker = async () => {
-    if ("serviceWorker" in navigator) {
-      try {
-        const registration = await navigator.serviceWorker.register(
-          "/service-worker.js"
-        );
-        console.log("Service Worker registrado:", registration);
-      } catch (error) {
-        console.log("Error al registrar Service Worker:", error);
-      }
-    }
-  };
-
-  useEffect(() => {
     requestNotificationPermission();
   }, []);
 
