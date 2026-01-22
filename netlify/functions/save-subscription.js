@@ -3,22 +3,19 @@ const { Client } = pkg;
 
 export default async function handler(event) {
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: "Method not allowed",
-    };
+    return new Response("Method not allowed", { status: 405 });
   }
 
   let subscription;
   try {
     subscription = JSON.parse(event.body);
   } catch (err) {
-    return { statusCode: 400, body: "Invalid JSON" };
+    return new Response("Invalid JSON", { status: 400 });
   }
 
   const client = new Client({
-    connectionString: process.env.NEON_DATABASE_URL,
-    ssl: { rejectUnauthorized: false }, // importante para Neon
+    connectionString: process.env.NETLIFY_DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
   });
 
   try {
@@ -26,10 +23,10 @@ export default async function handler(event) {
     await client.query("INSERT INTO subscriptions (subscription) VALUES ($1)", [
       JSON.stringify(subscription),
     ]);
-    return { statusCode: 200, body: "Subscription saved" };
+    return new Response("Subscription saved", { status: 200 });
   } catch (err) {
     console.error(err);
-    return { statusCode: 500, body: "Error saving subscription" };
+    return new Response("Error saving subscription", { status: 500 });
   } finally {
     await client.end();
   }
