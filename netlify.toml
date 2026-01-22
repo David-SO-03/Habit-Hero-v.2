@@ -1,0 +1,7 @@
+[[functions]]
+schedule = "0 10 * * *"
+path = "inactive-users"
+
+[[functions]]
+schedule = "0 9 * * 1"
+path = "new-week"
