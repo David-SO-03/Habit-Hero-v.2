@@ -1,7 +1,7 @@
 import pkg from "pg";
 const { Client } = pkg;
 
-export default async function handler(event) {
+export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
@@ -9,7 +9,7 @@ export default async function handler(event) {
   let subscription;
   try {
     subscription = JSON.parse(event.body);
-  } catch (err) {
+  } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
 
@@ -25,9 +25,9 @@ export default async function handler(event) {
     ]);
     return new Response("Subscription saved", { status: 200 });
   } catch (err) {
-    console.error(err);
+    console.error("DB error:", err);
     return new Response("Error saving subscription", { status: 500 });
   } finally {
     await client.end();
   }
-}
+};
