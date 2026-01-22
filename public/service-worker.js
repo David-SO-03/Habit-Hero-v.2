@@ -5,8 +5,8 @@ const CACHE_NAME = "habit-hero-v1";
 const ASSETS_TO_CACHE = [
   "/", // index.html
   "/index.html",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
+  "/icons/web-app-manifest-192x192.png",
+  "/icons/web-app-manifest-512x512.png",
   // Nota: Los JS y CSS compilados por Vite se agregarán automáticamente en producción
 ];
 
