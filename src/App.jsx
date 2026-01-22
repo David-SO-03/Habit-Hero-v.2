@@ -1437,23 +1437,6 @@ function HabitHeroWeekly() {
       setShowResetModal(true);
     };
 
-    const addShopItem = () => {
-      const newId =
-        Math.max(0, ...tempConfig.shopItems.map((item) => item.id)) + 1;
-      const newItem = {
-        id: newId,
-        name: "Nuevo item",
-        description: "Descripción del item",
-        price: 10,
-        type: "custom",
-        icon: "⭐",
-      };
-      setTempConfig({
-        ...tempConfig,
-        shopItems: [...tempConfig.shopItems, newItem],
-      });
-    };
-
     return (
       <div className="config-panel">
         <div className="config-header">
@@ -2427,27 +2410,33 @@ function HabitHeroWeekly() {
               </div>
             ))}
 
-            <button className="btn-add-item" onClick={addShopItem}>
-              ➕ Añadir Item
-            </button>
-
-            <button
-              onClick={saveShopConfig}
+            <div
               style={{
-                width: "100%",
-                background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                border: "none",
-                color: "#fff",
-                padding: "1rem",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: "700",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
+                display: "flex",
+                gap: "8px",
               }}
             >
-              💾 Guardar Configuración
-            </button>
+              <button className="btn-add-item" onClick={addShopItem}>
+                ➕ Añadir Item
+              </button>
+              <button
+                onClick={saveShopConfig}
+                style={{
+                  width: "100%",
+                  background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                  border: "none",
+                  color: "#fff",
+                  padding: "1rem",
+                  borderRadius: "12px",
+                  fontSize: "1rem",
+                  fontWeight: "700",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                }}
+              >
+                💾 Guardar Configuración
+              </button>
+            </div>
           </div>
         </div>
       </div>
