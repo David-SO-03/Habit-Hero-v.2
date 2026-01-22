@@ -2,17 +2,13 @@
 
 [build]
   command = "npm run build"
-  publish = "dist"   # Vite genera la carpeta 'dist'
+  publish = "dist"
   functions = "netlify/functions"
 
-# Scheduled function: notificación de inactividad
-[[plugins]]
-package = "@netlify/plugin-scheduled-functions"
+[[functions]]
+schedule = "0 10 * * *"
+path = "inactive-users"
 
-[[scheduled_functions]]
-function = "inactive-users"
-schedule = "0 10 * * *"  # Todos los días a las 10 AM
-
-[[scheduled_functions]]
-function = "new-week"
-schedule = "0 9 * * 1"   # Todos los lunes a las 9 AM
+[[functions]]
+schedule = "0 9 * * 1"
+path = "new-week"
