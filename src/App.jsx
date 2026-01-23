@@ -220,6 +220,25 @@ const DEFAULT_CONFIG = {
       icon: "❤️",
       healAmount: 5,
     },
+    {
+      id: 3,
+      name: "El jefe invita",
+      description: "Café o desayuno pagado por tu responsable directo",
+      price: 25,
+      type: "personalizado",
+      icon: "😄",
+      healAmount: 6,
+    },
+    {
+      id: 3,
+      name: "Silencio administrativo",
+      description:
+        "No responder a un email interno durante 24 h (si no es urgente)",
+      price: 25,
+      type: "personalizado",
+      icon: "🤫",
+      healAmount: 7,
+    },
   ],
   purchasedItems: [],
 };
