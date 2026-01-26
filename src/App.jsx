@@ -1459,6 +1459,8 @@ function HabitHeroWeekly() {
       });
     };
 
+    const textareaRef = useRef(null);
+
     const adjustHeight = (el) => {
       if (!el) return;
       el.style.height = "auto"; // reset
