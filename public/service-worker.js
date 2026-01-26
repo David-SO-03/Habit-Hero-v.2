@@ -1,7 +1,7 @@
 // Service Worker para Habit Hero Weekly
 // Versión: 1.1
 
-const CACHE_NAME = "habit-hero-v1";
+const CACHE_NAME = "HABITO";
 const ASSETS_TO_CACHE = [
   "/", // index.html
   "/index.html",
