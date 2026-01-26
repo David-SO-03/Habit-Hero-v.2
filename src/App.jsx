@@ -259,7 +259,6 @@ function HabitHeroWeekly() {
   const [showDeathScreen, setShowDeathScreen] = useState(false);
   const [pendingNewWeekNotification, setPendingNewWeekNotification] =
     useState(false);
-  const [showReviveConfirm, setShowReviveConfirm] = useState(false);
 
   const hexagonRef = useRef(null);
 
@@ -2505,7 +2504,13 @@ function HabitHeroWeekly() {
 
   const DeathScreen = () => {
     const handleRevive = () => {
-      setShowReviveConfirm(true);
+      if (confirm(`¿Has completado el castigo: "${config.deathPenalty}"?`)) {
+        updateConfig({
+          health: 25,
+          isDead: false,
+        });
+        setShowDeathScreen(false);
+      }
     };
 
     return (
@@ -2520,52 +2525,11 @@ function HabitHeroWeekly() {
             <p className="penalty-text">{config.deathPenalty}</p>
           </div>
 
-          <button type="button" className="btn-revive" onClick={handleRevive}>
+          <button className="btn-revive" onClick={handleRevive}>
             ✔ He Completado el Castigo
           </button>
 
           <p className="revive-note">Revivirás con 25 HP</p>
-        </div>
-      </div>
-    );
-  };
-
-  const ReviveConfirmModal = () => {
-    const confirmRevive = () => {
-      updateConfig({
-        health: 25,
-        isDead: false,
-      });
-      setShowReviveConfirm(false);
-      setShowDeathScreen(false);
-    };
-
-    const cancelRevive = () => {
-      setShowReviveConfirm(false);
-    };
-
-    return (
-      <div className="death-modal-overlay" onClick={cancelRevive}>
-        <div className="death-modal" onClick={(e) => e.stopPropagation()}>
-          <div className="death-modal-icon">☠️</div>
-
-          <h2 className="death-modal-title">¿Volver a la vida?</h2>
-
-          <p className="death-modal-text">
-            Para revivir debes haber completado el castigo:
-          </p>
-
-          <div className="death-penalty">“{config.deathPenalty}”</div>
-
-          <div className="death-modal-actions">
-            <button className="death-modal-btn cancel" onClick={cancelRevive}>
-              ❌ Aún no
-            </button>
-
-            <button className="death-modal-btn confirm" onClick={confirmRevive}>
-              ❤️ Sí, lo he hecho
-            </button>
-          </div>
         </div>
       </div>
     );
@@ -2641,8 +2605,6 @@ function HabitHeroWeekly() {
       {showShopConfig && <ShopConfigPanel />}
 
       {showDeathScreen && <DeathScreen />}
-
-      {showReviveConfirm && <ReviveConfirmModal />}
     </div>
   );
 }
