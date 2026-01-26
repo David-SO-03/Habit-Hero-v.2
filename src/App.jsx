@@ -221,7 +221,7 @@ const DEFAULT_CONFIG = {
       healAmount: 5,
     },
     {
-      id: 3,
+      id: 4,
       name: "El jefe invita",
       description: "Café o desayuno pagado por tu responsable directo",
       price: 90,
@@ -229,7 +229,7 @@ const DEFAULT_CONFIG = {
       icon: "😄",
     },
     {
-      id: 3,
+      id: 5,
       name: "Silencio administrativo",
       description:
         "No responder a un email interno durante 24 h (si no es urgente)",
