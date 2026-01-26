@@ -1467,11 +1467,6 @@ function HabitHeroWeekly() {
       el.style.height = `${el.scrollHeight}px`; // ajustar a contenido
     };
 
-    // Auto-ajusta cuando cambie el texto inicial o al montar el componente
-    useEffect(() => {
-      adjustHeight(textareaRef.current);
-    }, [tempConfig.deathPenalty]);
-
     const saveConfig = () => {
       const invalid = tempConfig.groups.filter((group) => {
         const total = group.tasks.reduce((sum, t) => sum + t.weight, 0);
@@ -1585,6 +1580,7 @@ function HabitHeroWeekly() {
             </p>
             <textarea
               className="config-death-penalty"
+              style={{ height: "100px" }}
               value={tempConfig.deathPenalty || ""}
               onChange={(e) => {
                 setTempConfig({ ...tempConfig, deathPenalty: e.target.value });
