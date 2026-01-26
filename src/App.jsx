@@ -1586,7 +1586,7 @@ function HabitHeroWeekly() {
                 setTempConfig({ ...tempConfig, deathPenalty: e.target.value });
                 adjustHeight(e.target); // ajustar mientras escribes
               }}
-              placeholder="Ej: Hacer 50 flexiones, invitar a café al equipo..."
+              placeholder="Ej: Invitar a café al equipo, ayudar a otro compañero en una tarea que no sea la tuya..."
             />
           </section>
 
