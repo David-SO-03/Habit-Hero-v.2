@@ -1573,9 +1573,11 @@ function HabitHeroWeekly() {
             <textarea
               className="config-death-penalty"
               value={tempConfig.deathPenalty || ""}
-              onChange={(e) =>
-                setTempConfig({ ...tempConfig, deathPenalty: e.target.value })
-              }
+              onChange={(e) => {
+                setTempConfig({ ...tempConfig, deathPenalty: e.target.value });
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
               placeholder="Ej: Hacer 50 flexiones, invitar a café al equipo..."
             />
           </section>
