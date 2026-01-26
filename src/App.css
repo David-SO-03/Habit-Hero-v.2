@@ -1685,9 +1685,20 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  color: #10b981;
+  font-weight: 700;
+  border-radius: 50%;
+  transition: all 0.3s ease;
 }
 
+.week-detail-task-icon.completed {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.week-detail-task-icon.incomplete {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
 .week-detail-task-name {
   flex: 1;
   font-size: 0.9375rem;

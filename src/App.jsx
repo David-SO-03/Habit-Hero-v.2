@@ -1934,8 +1934,12 @@ function HabitHeroWeekly() {
                 <div className="week-detail-tasks">
                   {group.tasks.map((task) => (
                     <div key={task.id} className="week-detail-task">
-                      <span className="week-detail-task-icon">
-                        {task.completed ? "✔" : "○"}
+                      <span
+                        className={`week-detail-task-icon ${
+                          task.completed ? "completed" : "incomplete"
+                        }`}
+                      >
+                        {task.completed ? "✔" : "✘"}
                       </span>
                       <span
                         className={`week-detail-task-name ${
