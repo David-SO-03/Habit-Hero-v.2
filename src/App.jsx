@@ -2520,7 +2520,7 @@ function HabitHeroWeekly() {
             <p className="penalty-text">{config.deathPenalty}</p>
           </div>
 
-          <button className="btn-revive" onClick={handleRevive}>
+          <button type="button" className="btn-revive" onClick={handleRevive}>
             ✔ He Completado el Castigo
           </button>
 
