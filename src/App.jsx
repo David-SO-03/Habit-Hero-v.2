@@ -201,7 +201,7 @@ const DEFAULT_CONFIG = {
       description: "Puedes saltar una tarea esta semana",
       price: 30,
       type: "skip_task",
-      icon: "⏭️",
+      icon: "⭐",
     },
     {
       id: 2,
@@ -259,8 +259,30 @@ function HabitHeroWeekly() {
   const [showShop, setShowShop] = useState(false);
   const [showShopConfig, setShowShopConfig] = useState(false);
   const [showDeathScreen, setShowDeathScreen] = useState(false);
+  const [pendingNewWeekNotification, setPendingNewWeekNotification] =
+    useState(false);
 
   const hexagonRef = useRef(null);
+
+  // Función para mostrar banners de notificación in-app
+  const showInAppBanner = (title, message) => {
+    const banner = document.createElement("div");
+    banner.className = "notification-banner";
+    banner.innerHTML = `
+      <div class="notification-banner-content">
+        <strong>${title}</strong>
+        <p>${message}</p>
+      </div>
+    `;
+    document.body.appendChild(banner);
+
+    setTimeout(() => banner.classList.add("show"), 100);
+
+    setTimeout(() => {
+      banner.classList.remove("show");
+      setTimeout(() => banner.remove(), 300);
+    }, 5000);
+  };
 
   useEffect(() => {
     loadGameData();
@@ -281,6 +303,20 @@ function HabitHeroWeekly() {
     if (loadingEl) loadingEl.style.display = "none";
   }, []);
 
+  // Mostrar notificación de nueva semana cuando se activa el flag
+  useEffect(() => {
+    if (pendingNewWeekNotification) {
+      const timer = setTimeout(() => {
+        showInAppBanner(
+          "🎯 ¡Ha empezado una nueva semana!",
+          "Empieza fuerte y alcanza tus metas. ¡Vamos! 🚀"
+        );
+        setPendingNewWeekNotification(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [pendingNewWeekNotification]);
+
   const requestNotificationPermission = async () => {
     if ("Notification" in window && Notification.permission === "default") {
       try {
@@ -296,7 +332,6 @@ function HabitHeroWeekly() {
       return;
     }
 
-    const today = new Date().toISOString().split("T")[0];
     const daysLeft = getDaysLeftInWeek();
     const isComplete = isWeekComplete();
 
@@ -313,20 +348,8 @@ function HabitHeroWeekly() {
         localStorage.setItem(notifKey, "true");
       }
     }
-
-    if (daysLeft === 7) {
-      const notifKey = `notif-new-week-${config.weekStart}`;
-      const alreadySent = localStorage.getItem(notifKey);
-
-      if (!alreadySent) {
-        sendNotification(
-          "🎯 ¡Ha empezado una nueva semana!",
-          "Empieza fuerte y alcanza tus metas. ¡Vamos! 🚀",
-          "🎯"
-        );
-        localStorage.setItem(notifKey, "true");
-      }
-    }
+    // Nota: La notificación de "nueva semana" se maneja directamente en loadGameData
+    // cuando se hace el auto-reset, para evitar falsos positivos por timezone
   };
 
   const sendNotification = (title, body, icon) => {
@@ -342,25 +365,6 @@ function HabitHeroWeekly() {
     } else {
       showInAppBanner(title, body);
     }
-  };
-
-  const showInAppBanner = (title, message) => {
-    const banner = document.createElement("div");
-    banner.className = "notification-banner";
-    banner.innerHTML = `
-      <div class="notification-banner-content">
-        <strong>${title}</strong>
-        <p>${message}</p>
-      </div>
-    `;
-    document.body.appendChild(banner);
-
-    setTimeout(() => banner.classList.add("show"), 100);
-
-    setTimeout(() => {
-      banner.classList.remove("show");
-      setTimeout(() => banner.remove(), 300);
-    }, 5000);
   };
 
   useEffect(() => {
@@ -437,6 +441,13 @@ function HabitHeroWeekly() {
             const oldCelebrationKey = `celebration-shown-${savedData.weekStart}`;
             localStorage.removeItem(oldCelebrationKey);
 
+            // Notificación de nueva semana (se dispara aquí, en el momento del reset)
+            const newWeekNotifKey = `notif-new-week-${resetData.weekStart}`;
+            if (!localStorage.getItem(newWeekNotifKey)) {
+              localStorage.setItem(newWeekNotifKey, "true");
+              setPendingNewWeekNotification(true);
+            }
+
             setConfig(resetData);
             await saveGameData(resetData);
           } else {
@@ -462,10 +473,28 @@ function HabitHeroWeekly() {
             const weekEnd = new Date(savedWeekStart);
             weekEnd.setDate(weekEnd.getDate() + 6);
 
+            // Función helper para calcular progreso del grupo
+            const calcGroupProgress = (group) => {
+              return group.tasks
+                .filter((task) => task.completed)
+                .reduce((sum, task) => sum + task.weight, 0);
+            };
+
+            // Calcular pérdida de vida por grupos incompletos
+            const incompleteGroups = parsed.groups.filter(
+              (g) => calcGroupProgress(g) < 100
+            );
+            const healthLoss =
+              incompleteGroups.length *
+              (parsed.healthLossPerIncompleteGroup || 15);
+            const newHealth = Math.max(0, (parsed.health || 100) - healthLoss);
+
             const weekRecord = {
               weekStart: parsed.weekStart,
               weekEnd: weekEnd.toISOString().split("T")[0],
               groups: JSON.parse(JSON.stringify(parsed.groups)),
+              coinsEarned: parsed.weekCoinsEarned || 0,
+              healthLost: healthLoss,
             };
 
             const updatedHistory = [
@@ -484,10 +513,22 @@ function HabitHeroWeekly() {
               })),
               weekStart: today.toISOString().split("T")[0],
               weekHistory: updatedHistory,
+              health: newHealth,
+              isDead: newHealth === 0,
+              weeklyHealthRegenUsed: [],
+              purchasedItems: [],
+              weekCoinsEarned: 0,
             };
 
             const oldCelebrationKey = `celebration-shown-${parsed.weekStart}`;
             localStorage.removeItem(oldCelebrationKey);
+
+            // Notificación de nueva semana (se dispara aquí, en el momento del reset)
+            const newWeekNotifKey = `notif-new-week-${resetData.weekStart}`;
+            if (!localStorage.getItem(newWeekNotifKey)) {
+              localStorage.setItem(newWeekNotifKey, "true");
+              setPendingNewWeekNotification(true);
+            }
 
             setConfig(resetData);
             localStorage.setItem(
@@ -781,7 +822,7 @@ function HabitHeroWeekly() {
     banner.className = "reward-notification";
     banner.innerHTML = `
       <div class="reward-content">
-        <strong>⏭️ ¡Puedes saltar una tarea! Usa este item sabiamente.</strong>
+        <strong>⭐ ¡Puedes saltar una tarea! Usa este item sabiamente.</strong>
       </div>
     `;
     document.body.appendChild(banner);
@@ -1482,7 +1523,7 @@ function HabitHeroWeekly() {
                     color: needsNormalization ? "#ef4444" : "#10b981",
                   }}
                 >
-                  Total: {totalWeight}% {needsNormalization && "⚠️"}
+                  Total: {totalWeight}% {needsNormalization && "🔄"}
                 </div>
 
                 {group.tasks.map((task, index) => (
@@ -1520,6 +1561,27 @@ function HabitHeroWeekly() {
               </section>
             );
           })}
+          {/* Sección de castigo de resurrección */}
+          <section className="config-section death-penalty-section">
+            <div className="death-penalty-header">
+              <span className="death-penalty-icon">💀</span>
+              <h3>Castigo de Resurrección</h3>
+            </div>
+            <p className="death-penalty-description">
+              Este castigo deberás cumplirlo cuando tu vida llegue a 0 para
+              poder revivir.
+            </p>
+            <input
+              type="text"
+              className="config-death-penalty"
+              value={tempConfig.deathPenalty || ""}
+              onChange={(e) =>
+                setTempConfig({ ...tempConfig, deathPenalty: e.target.value })
+              }
+              placeholder="Ej: Hacer 50 flexiones, invitar a café al equipo..."
+            />
+          </section>
+
           <div className="config-actions">
             <button type="button" className="btn-primary" onClick={saveConfig}>
               <Settings size={18} /> Guardar Cambios
@@ -1539,7 +1601,7 @@ function HabitHeroWeekly() {
               className="validation-modal"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="validation-modal-icon">⚠️</div>
+              <div className="validation-modal-icon">🔄</div>
               <h2 className="validation-modal-title">Grupos sin ajustar</h2>
               <p className="validation-modal-text">
                 Los siguientes grupos no suman 100%:
@@ -1568,7 +1630,7 @@ function HabitHeroWeekly() {
                           setInvalidGroups([]);
                         }}
                       >
-                        ✓ Ajustar a 100%
+                        ✔ Ajustar a 100%
                       </button>
                     </div>
                   );
@@ -1857,7 +1919,7 @@ function HabitHeroWeekly() {
                   {group.tasks.map((task) => (
                     <div key={task.id} className="week-detail-task">
                       <span className="week-detail-task-icon">
-                        {task.completed ? "✓" : "○"}
+                        {task.completed ? "✔" : "○"}
                       </span>
                       <span
                         className={`week-detail-task-name ${
@@ -1950,7 +2012,7 @@ function HabitHeroWeekly() {
           ))}
 
           <div className="celebration-content">
-            <div className="celebration-icon">🎉</div>
+            <div className="celebration-icon">🎁‰</div>
             <h1 className="celebration-title">¡INCREÍBLE!</h1>
             <p className="celebration-subtitle">
               Has completado todos tus objetivos
@@ -2034,7 +2096,7 @@ function HabitHeroWeekly() {
     return (
       <div className="reset-modal-overlay">
         <div className="reset-modal">
-          <div className="reset-modal-icon">🔄</div>
+          <div className="reset-modal-icon">🗑️</div>
           <h2 className="reset-modal-title">¿Resetear Semana?</h2>
           <p className="reset-modal-text">
             Esta acción desmarcará todas las tareas completadas.
@@ -2468,7 +2530,7 @@ function HabitHeroWeekly() {
           </div>
 
           <button className="btn-revive" onClick={handleRevive}>
-            ✓ He Completado el Castigo
+            ✔ He Completado el Castigo
           </button>
 
           <p className="revive-note">Revivirás con 25 HP</p>
