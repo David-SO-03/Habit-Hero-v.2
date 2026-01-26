@@ -661,9 +661,17 @@ function HabitHeroWeekly() {
         updates.totalCoinsEarned =
           (config.totalCoinsEarned || 0) - coinsToRemove;
         updates.weekCoinsEarned = (config.weekCoinsEarned || 0) - coinsToRemove;
-        updates.weeklyHealthRegenUsed = (
-          config.weeklyHealthRegenUsed || []
-        ).filter((id) => id !== groupId);
+
+        // Si este grupo había otorgado vida al completarse, quitarla
+        const healthRegenUsed = config.weeklyHealthRegenUsed || [];
+        if (healthRegenUsed.includes(groupId)) {
+          const healthLoss = 2; // La misma cantidad que se da al completar
+          updates.health = Math.max(0, (config.health || 100) - healthLoss);
+        }
+
+        updates.weeklyHealthRegenUsed = healthRegenUsed.filter(
+          (id) => id !== groupId
+        );
       }
 
       const willBeComplete = updatedGroups.every((group) => {
