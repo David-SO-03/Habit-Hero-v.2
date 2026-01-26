@@ -2836,9 +2836,8 @@ body {
   border-color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-  resize: vertical; /* opcional */
+  resize: vertical;
   line-height: 1.4; /* mejora lectura */
-  min-height: 3.5rem;
   resize: none; /* importante */
   overflow: hidden; /* importante */
 }

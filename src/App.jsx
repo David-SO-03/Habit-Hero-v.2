@@ -191,7 +191,7 @@ const DEFAULT_CONFIG = {
   healthLossPerIncompleteGroup: 15,
   isDead: false,
   deathPenalty:
-    "Explicar en 30 segundos qué vector se cayó y qué harás distinto la próxima semana y ayudar a otro compañero en una tarea que no sea la tuya.",
+    "Explicar en 30 segundos qué vector se cayó y qué harás distinto la próxima semana.",
   weeklyHealthRegenUsed: [],
 
   // ⭐ NUEVO: Tienda
