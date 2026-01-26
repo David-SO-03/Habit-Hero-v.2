@@ -1570,8 +1570,7 @@ function HabitHeroWeekly() {
               Este castigo deberás cumplirlo cuando tu vida llegue a 0 para
               poder revivir.
             </p>
-            <input
-              type="text"
+            <textarea
               className="config-death-penalty"
               value={tempConfig.deathPenalty || ""}
               onChange={(e) =>
