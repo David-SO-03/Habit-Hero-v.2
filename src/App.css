@@ -2839,6 +2839,8 @@ body {
   resize: vertical; /* opcional */
   line-height: 1.4; /* mejora lectura */
   min-height: 3.5rem;
+  resize: none; /* importante */
+  overflow: hidden; /* importante */
 }
 
 .config-death-penalty::placeholder {
