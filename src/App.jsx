@@ -2028,7 +2028,7 @@ function HabitHeroWeekly() {
           ))}
 
           <div className="celebration-content">
-            <div className="celebration-icon">🎁‰</div>
+            <div className="celebration-icon">🎉</div>
             <h1 className="celebration-title">¡INCREÍBLE!</h1>
             <p className="celebration-subtitle">
               Has completado todos tus objetivos
