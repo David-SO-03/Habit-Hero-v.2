@@ -2538,9 +2538,7 @@ function HabitHeroWeekly() {
   return (
     <div className="app">
       <div className="header">
-        <div className="logo">
-          HABIT HERO <br></br> CIUDAD
-        </div>
+        <div className="logo">HABITO CIUDAD</div>
         <div className="player-stats">
           <div className="stat-item health-stat">
             <Heart

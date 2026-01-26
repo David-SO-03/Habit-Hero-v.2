@@ -54,7 +54,7 @@ self.addEventListener("message", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  let data = { title: "Habit Hero", body: "Notificación", url: "/" };
+  let data = { title: "HABITO", body: "Notificación", url: "/" };
   if (event.data) data = event.data.json();
 
   event.waitUntil(

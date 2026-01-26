@@ -15,7 +15,7 @@ root.render(
 // Registrar Service Worker con actualización
 const updateSW = registerSW({
   onOfflineReady() {
-    console.log("Habit Hero listo para offline");
+    console.log("HABITO listo para offline");
   },
   onNeedRefresh() {
     console.log("Nueva versión disponible");
