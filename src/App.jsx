@@ -1459,6 +1459,17 @@ function HabitHeroWeekly() {
       });
     };
 
+    const adjustHeight = (el) => {
+      if (!el) return;
+      el.style.height = "auto"; // reset
+      el.style.height = `${el.scrollHeight}px`; // ajustar a contenido
+    };
+
+    // Auto-ajusta cuando cambie el texto inicial o al montar el componente
+    useEffect(() => {
+      adjustHeight(textareaRef.current);
+    }, [tempConfig.deathPenalty]);
+
     const saveConfig = () => {
       const invalid = tempConfig.groups.filter((group) => {
         const total = group.tasks.reduce((sum, t) => sum + t.weight, 0);
@@ -1575,8 +1586,7 @@ function HabitHeroWeekly() {
               value={tempConfig.deathPenalty || ""}
               onChange={(e) => {
                 setTempConfig({ ...tempConfig, deathPenalty: e.target.value });
-                e.target.style.height = "auto";
-                e.target.style.height = `${e.target.scrollHeight}px`;
+                adjustHeight(e.target); // ajustar mientras escribes
               }}
               placeholder="Ej: Hacer 50 flexiones, invitar a café al equipo..."
             />
